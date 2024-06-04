@@ -1,0 +1,9 @@
+@import url('./main-layout.css');
+@import url('./views/registro-view.css');
+@import url('./views/login-view.css');
+@import url('./views/restablecer-password-view.css');
+@import url('./views/gestion-usuario-view.css');
+@import url('./views/gestor-clases-view.css');
+@import url('./views/creador-curso-view.css');
+@import url('./views/gestor-cuestionario-view.css');
+@import url('./views/creador-cuestionario-view.css');
