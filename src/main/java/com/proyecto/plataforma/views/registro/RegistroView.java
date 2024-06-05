@@ -1,82 +1,87 @@
 package com.proyecto.plataforma.views.registro;
 
+import com.proyecto.plataforma.data.User;
+import com.proyecto.plataforma.services.UserService;
 import com.proyecto.plataforma.views.MainLayout;
-import com.vaadin.flow.component.Composite;
+import com.proyecto.plataforma.views.login.LoginView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H6;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
-import java.util.ArrayList;
-import java.util.List;
 
 @PageTitle("Registro")
 @Route(value = "registro", layout = MainLayout.class)
-public class RegistroView extends Composite<VerticalLayout> {
+public class RegistroView extends VerticalLayout {
 
-    public RegistroView() {
-        HorizontalLayout layoutRow = new HorizontalLayout();
-        H3 h3 = new H3();
-        H6 h6 = new H6();
-        EmailField emailField = new EmailField();
-        PasswordField passwordField = new PasswordField();
-        Select select = new Select();
-        Button buttonPrimary = new Button();
-        getContent().setWidth("100%");
-        getContent().getStyle().set("flex-grow", "1");
-        getContent().setJustifyContentMode(JustifyContentMode.CENTER);
-        getContent().setAlignItems(Alignment.CENTER);
-        layoutRow.addClassName(Gap.MEDIUM);
-        layoutRow.setWidth("100%");
-        layoutRow.setHeight("min-content");
-        layoutRow.setAlignItems(Alignment.CENTER);
-        layoutRow.setJustifyContentMode(JustifyContentMode.CENTER);
-        h3.setText("Regístrate");
-        layoutRow.setAlignSelf(FlexComponent.Alignment.CENTER, h3);
-        h3.setWidth("max-content");
-        h6.setText(
-                "Al continuar, aceptas nuestro Acuerdo del usuario y confirmas que has entendido la Política de privacidad.");
-        h6.setWidth("max-content");
-        emailField.setLabel("Correo electrónico");
-        emailField.setWidth("min-content");
-        passwordField.setLabel("Contraseña");
-        passwordField.setWidth("min-content");
-        select.setLabel("¿Eres?");
-        select.setWidth("min-content");
-        setSelectSampleData(select);
-        buttonPrimary.setText("Continuar");
-        buttonPrimary.setWidth("min-content");
-        buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        getContent().add(layoutRow);
-        layoutRow.add(h3);
-        getContent().add(h6);
-        getContent().add(emailField);
-        getContent().add(passwordField);
-        getContent().add(select);
-        getContent().add(buttonPrimary);
-    }
+    public RegistroView(UserService userService) {
+        setWidth("100%");
+        getStyle().set("flex-grow", "1");
+        setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        setAlignItems(FlexComponent.Alignment.CENTER);
 
-    record SampleItem(String value, String label, Boolean disabled) {
-    }
+        H3 title = new H3("Regístrate");
+        H6 subtitle = new H6("Coloca tus datos para comenzar el registro.");
+        subtitle.getStyle().set("text-align", "center");
 
-    private void setSelectSampleData(Select select) {
-        List<SampleItem> sampleItems = new ArrayList<>();
-        sampleItems.add(new SampleItem("first", "First", null));
-        sampleItems.add(new SampleItem("second", "Second", null));
-        sampleItems.add(new SampleItem("third", "Third", Boolean.TRUE));
-        sampleItems.add(new SampleItem("fourth", "Fourth", null));
-        select.setItems(sampleItems);
-        select.setItemLabelGenerator(item -> ((SampleItem) item).label());
-        select.setItemEnabledProvider(item -> !Boolean.TRUE.equals(((SampleItem) item).disabled()));
+        TextField nombreField = new TextField("Nombre");
+        nombreField.setWidthFull();
+
+        TextField apellidoField = new TextField("Apellido");
+        apellidoField.setWidthFull();
+
+        EmailField emailField = new EmailField("Correo electrónico");
+        emailField.setWidthFull();
+
+        PasswordField passwordField = new PasswordField("Contraseña");
+        passwordField.setWidthFull();
+
+        Select<String> roleSelect = new Select<>();
+        roleSelect.setItems("Estudiante", "Profesor");
+        roleSelect.setLabel("¿Eres?");
+        roleSelect.setWidthFull();
+
+        Button registerButton = new Button("Continuar");
+        registerButton.setWidthFull();
+        registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        registerButton.addClickListener(event -> {
+            String nombre = nombreField.getValue();
+            String apellido = apellidoField.getValue();
+            String correo = emailField.getValue();
+            String contraseña = passwordField.getValue();
+            String rol = roleSelect.getValue();
+
+            if (nombre.isEmpty() || apellido.isEmpty() || correo.isEmpty() || contraseña.isEmpty() || rol == null) {
+                Notification.show("Por favor, complete todos los campos.", 3000, Notification.Position.MIDDLE);
+                return;
+            }
+
+            if (!emailField.isInvalid() && !userService.isCorreoRegistrado(correo)) {
+                User user = new User();
+                user.setNombre(nombre);
+                user.setApellido(apellido);
+                user.setCorreo(correo);
+                user.setContraseña(contraseña);
+                user.setRol(rol);
+                userService.saveUser(user);
+                Notification.show("Registro exitoso!", 3000, Notification.Position.MIDDLE);
+                getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+            } else {
+                Notification.show("Correo electrónico no válido o ya registrado.", 3000, Notification.Position.MIDDLE);
+            }
+        });
+
+        emailField.setErrorMessage("Por favor, ingrese un correo válido.");
+        emailField.setPattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}");
+
+        add(title, subtitle, nombreField, apellidoField, emailField, passwordField, roleSelect, registerButton);
     }
 }

@@ -1,4 +1,4 @@
-package com.proyecto.plataforma.views.creadorcuestionario;
+/*package com.proyecto.plataforma.views.creadorcuestionario;
 
 import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.Composite;
@@ -167,3 +167,4 @@ public class CreadorCuestionarioView extends Composite<VerticalLayout> {
         comboBox.setItemLabelGenerator(item -> ((SampleItem) item).label());
     }
 }
+*/

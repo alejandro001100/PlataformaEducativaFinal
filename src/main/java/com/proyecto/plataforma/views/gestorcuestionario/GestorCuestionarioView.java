@@ -1,7 +1,6 @@
-package com.proyecto.plataforma.views.gestorcuestionario;
+/*package com.proyecto.plataforma.views.gestorcuestionario;
 
-import com.proyecto.plataforma.data.SamplePerson;
-import com.proyecto.plataforma.services.SamplePersonService;
+import com.proyecto.plataforma.services.UserService;
 import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
@@ -56,5 +55,6 @@ public class GestorCuestionarioView extends Composite<VerticalLayout> {
     }
 
     @Autowired()
-    private SamplePersonService samplePersonService;
+    private UserService samplePersonService;
 }
+*/

@@ -1,12 +1,17 @@
 package com.proyecto.plataforma.views.login;
 
-import com.proyecto.plataforma.views.MainLayout;
-import com.vaadin.flow.component.Composite;
+import com.proyecto.plataforma.data.User;
+import com.proyecto.plataforma.services.UserService;
+import com.proyecto.plataforma.views.registro.RegistroView;
+import com.proyecto.plataforma.views.restablecerpassword.RestablecerPasswordView;
+import com.proyecto.plataforma.views.gestionusuario.GestionUsuarioView;
+import com.proyecto.plataforma.views.creadorcurso.CreadorCursoView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -15,70 +20,73 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
+import com.vaadin.flow.server.VaadinSession;
 
-@PageTitle("Login")
-@Route(value = "", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
-public class LoginView extends Composite<VerticalLayout> {
+@Route(value = "")
+@PageTitle("Login | Proyecto Plataforma Aprendizaje")
+public class LoginView extends VerticalLayout {
 
-    public LoginView() {
-        HorizontalLayout layoutRow = new HorizontalLayout();
-        H3 h3 = new H3();
-        H5 h5 = new H5();
-        EmailField emailField = new EmailField();
-        PasswordField passwordField = new PasswordField();
-        RouterLink routerLink = new RouterLink();
-        Button buttonPrimary = new Button();
-        HorizontalLayout layoutRow2 = new HorizontalLayout();
-        Paragraph textSmall = new Paragraph();
-        Button buttonSecondary = new Button();
-        getContent().setWidth("100%");
-        getContent().getStyle().set("flex-grow", "1");
-        getContent().setJustifyContentMode(JustifyContentMode.CENTER);
-        getContent().setAlignItems(Alignment.CENTER);
-        layoutRow.addClassName(Gap.MEDIUM);
-        layoutRow.setWidth("100%");
-        layoutRow.setHeight("min-content");
-        layoutRow.setAlignItems(Alignment.CENTER);
-        layoutRow.setJustifyContentMode(JustifyContentMode.CENTER);
-        h3.setText("¡Le damos la bienvenida a Plataforma de Aprendizaje UDLA!");
-        h3.setWidth("max-content");
-        h5.setText("Inicie sesión en su cuenta");
-        h5.setWidth("max-content");
-        emailField.setLabel("Correo electrónico");
-        emailField.setWidth("min-content");
-        passwordField.setLabel("Contraseña");
-        passwordField.setWidth("min-content");
-        routerLink.setText("¿Olvidó su contraseña?");
-        routerLink.setRoute(LoginView.class);
-        routerLink.setWidth("200px");
-        buttonPrimary.setText("Iniciar Sesión");
-        buttonPrimary.setWidth("min-content");
-        buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        layoutRow2.setWidthFull();
-        getContent().setFlexGrow(1.0, layoutRow2);
-        layoutRow2.addClassName(Gap.MEDIUM);
-        layoutRow2.setWidth("100%");
-        layoutRow2.getStyle().set("flex-grow", "1");
-        layoutRow2.setAlignItems(Alignment.CENTER);
-        layoutRow2.setJustifyContentMode(JustifyContentMode.CENTER);
-        textSmall.setText("¿No tiene una cuenta?");
-        textSmall.setWidth("140px");
-        textSmall.getStyle().set("font-size", "var(--lumo-font-size-xs)");
-        buttonSecondary.setText("Regístrese");
-        buttonSecondary.setWidth("min-content");
-        getContent().add(layoutRow);
-        layoutRow.add(h3);
-        getContent().add(h5);
-        getContent().add(emailField);
-        getContent().add(passwordField);
-        getContent().add(routerLink);
-        getContent().add(buttonPrimary);
-        getContent().add(layoutRow2);
-        layoutRow2.add(textSmall);
-        layoutRow2.add(buttonSecondary);
+    private final UserService userService;
+
+    public LoginView(UserService userService) {
+        this.userService = userService;
+
+        setWidth("100%");
+        getStyle().set("flex-grow", "1");
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        setAlignItems(Alignment.CENTER);
+
+        H3 title = new H3("¡Le damos la bienvenida a Plataforma de Aprendizaje UDLA!");
+        H5 subtitle = new H5("Inicie sesión en su cuenta");
+
+        EmailField emailField = new EmailField("Correo electrónico");
+        emailField.setWidthFull();
+
+        PasswordField passwordField = new PasswordField("Contraseña");
+        passwordField.setWidthFull();
+
+        RouterLink forgotPasswordLink = new RouterLink("¿Olvidó su contraseña?", RestablecerPasswordView.class);
+        forgotPasswordLink.getElement().getStyle().set("margin-top", "10px");
+
+        Button loginButton = new Button("Iniciar Sesión");
+        loginButton.setWidth("100%");
+        loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        loginButton.getStyle().set("margin-top", "10px");
+        loginButton.addClickListener(event -> {
+            String correo = emailField.getValue();
+            String contraseña = passwordField.getValue();
+            User user = userService.findByCorreo(correo);
+            if (user != null && user.getContraseña().equals(contraseña)) {
+                VaadinSession.getCurrent().setAttribute(User.class, user);
+                Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
+
+                // Redirigir según el rol del usuario
+                if ("Admin".equals(user.getRol())) {
+                    getUI().ifPresent(ui -> ui.navigate(GestionUsuarioView.class));
+                } else if ("Profesor".equals(user.getRol())) {
+                    getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class)); // Cambia a la vista correspondiente para PROFESOR
+                } else if ("Estudiante".equals(user.getRol())) {
+                    getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class)); // Cambia a la vista correspondiente para ESTUDIANTE
+                }
+            } else {
+                Notification.show("Correo o contraseña incorrectos.", 3000, Notification.Position.MIDDLE);
+            }
+        });
+
+        HorizontalLayout actions = new HorizontalLayout(loginButton);
+        actions.setWidthFull();
+        actions.setJustifyContentMode(JustifyContentMode.CENTER);
+        actions.setAlignItems(Alignment.CENTER);
+
+        Paragraph noAccountText = new Paragraph("¿No tiene una cuenta?");
+        RouterLink registerLink = new RouterLink("Regístrese", RegistroView.class);
+        registerLink.getElement().getStyle().set("margin-left", "0.5em");
+
+        HorizontalLayout registerLayout = new HorizontalLayout(noAccountText, registerLink);
+        registerLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        registerLayout.setAlignItems(Alignment.CENTER);
+
+        add(title, subtitle, emailField, passwordField, forgotPasswordLink, actions, registerLayout);
     }
 }
