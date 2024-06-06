@@ -3,10 +3,10 @@ package com.proyecto.plataforma.data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "usuarios")
+//@Document(collection = "usuarios")
 public class User {
-    @Id
-    private String id;
+    //@Id
+    //private String id;
     private String nombre;
     private String apellido;
     private String correo;
@@ -15,6 +15,18 @@ public class User {
 
     // Getters y Setters
 
+
+    public User(String nombre, String apellido, String correo, String contraseña, String rol) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.correo = correo;
+        this.contraseña = contraseña;
+        this.rol = rol;
+    }
+
+    public User() {
+
+    }
 
     public String getNombre ( ) {
         return nombre;
@@ -32,13 +44,13 @@ public class User {
         this.apellido = apellido;
     }
 
-    public String getId() {
+    /*public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
+    }*/
 
     public String getCorreo() {
         return correo;

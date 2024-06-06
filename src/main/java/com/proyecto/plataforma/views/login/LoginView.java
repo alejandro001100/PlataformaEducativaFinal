@@ -1,10 +1,14 @@
 package com.proyecto.plataforma.views.login;
 
+import com.proyecto.plataforma.data.Estudiante;
+import com.proyecto.plataforma.data.Profesor;
 import com.proyecto.plataforma.data.User;
+import com.proyecto.plataforma.services.EstudianteService;
+import com.proyecto.plataforma.services.ProfesorService;
 import com.proyecto.plataforma.services.UserService;
+import com.proyecto.plataforma.views.gestionusuario.GestionUsuarioView;
 import com.proyecto.plataforma.views.registro.RegistroView;
 import com.proyecto.plataforma.views.restablecerpassword.RestablecerPasswordView;
-import com.proyecto.plataforma.views.gestionusuario.GestionUsuarioView;
 import com.proyecto.plataforma.views.creadorcurso.CreadorCursoView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -27,10 +31,12 @@ import com.vaadin.flow.server.VaadinSession;
 @PageTitle("Login | Proyecto Plataforma Aprendizaje")
 public class LoginView extends VerticalLayout {
 
-    private final UserService userService;
+    private final EstudianteService estudianteService;
+    private final ProfesorService profesorService;
 
-    public LoginView(UserService userService) {
-        this.userService = userService;
+    public LoginView(EstudianteService estudianteService, ProfesorService profesorService) {
+        this.estudianteService = estudianteService;
+        this.profesorService = profesorService;
 
         setWidth("100%");
         getStyle().set("flex-grow", "1");
@@ -56,19 +62,21 @@ public class LoginView extends VerticalLayout {
         loginButton.addClickListener(event -> {
             String correo = emailField.getValue();
             String contraseña = passwordField.getValue();
-            User user = userService.findByCorreo(correo);
-            if (user != null && user.getContraseña().equals(contraseña)) {
-                VaadinSession.getCurrent().setAttribute(User.class, user);
+            Profesor profesor = profesorService.findByCorreo(correo);
+            Estudiante estudiante= estudianteService.findByCorreo(correo);
+            if (estudiante!= null && estudiante.getContraseña().equals(contraseña)) {
+                VaadinSession.getCurrent().setAttribute(Estudiante.class, estudiante);
                 Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
 
+                getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class));
+
                 // Redirigir según el rol del usuario
-                if ("Admin".equals(user.getRol())) {
-                    getUI().ifPresent(ui -> ui.navigate(GestionUsuarioView.class));
-                } else if ("Profesor".equals(user.getRol())) {
-                    getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class)); // Cambia a la vista correspondiente para PROFESOR
-                } else if ("Estudiante".equals(user.getRol())) {
-                    getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class)); // Cambia a la vista correspondiente para ESTUDIANTE
-                }
+            } else if (profesor!= null && profesor.getContraseña().equals(contraseña)) {
+                VaadinSession.getCurrent().setAttribute(Profesor.class, profesor);
+                Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
+                //getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class));
+                getUI().ifPresent(ui -> ui.navigate(GestionUsuarioView.class));
+
             } else {
                 Notification.show("Correo o contraseña incorrectos.", 3000, Notification.Position.MIDDLE);
             }

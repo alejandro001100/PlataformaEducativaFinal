@@ -1,6 +1,10 @@
 package com.proyecto.plataforma.views.registro;
 
+import com.proyecto.plataforma.data.Estudiante;
+import com.proyecto.plataforma.data.Profesor;
 import com.proyecto.plataforma.data.User;
+import com.proyecto.plataforma.services.EstudianteService;
+import com.proyecto.plataforma.services.ProfesorService;
 import com.proyecto.plataforma.services.UserService;
 import com.proyecto.plataforma.views.MainLayout;
 import com.proyecto.plataforma.views.login.LoginView;
@@ -22,7 +26,7 @@ import com.vaadin.flow.router.Route;
 @Route(value = "registro", layout = MainLayout.class)
 public class RegistroView extends VerticalLayout {
 
-    public RegistroView(UserService userService) {
+    public RegistroView(EstudianteService estudianteService, ProfesorService profesorService) {
         setWidth("100%");
         getStyle().set("flex-grow", "1");
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -64,14 +68,26 @@ public class RegistroView extends VerticalLayout {
                 return;
             }
 
-            if (!emailField.isInvalid() && !userService.isCorreoRegistrado(correo)) {
-                User user = new User();
-                user.setNombre(nombre);
-                user.setApellido(apellido);
-                user.setCorreo(correo);
-                user.setContraseña(contraseña);
-                user.setRol(rol);
-                userService.saveUser(user);
+            if (!emailField.isInvalid() && !profesorService.isCorreoRegistrado(correo) && rol.equals("Profesor")) {
+                Profesor profesor = new Profesor();
+                profesor.setNombre(nombre);
+                profesor.setApellido(apellido);
+                profesor.setCorreo(correo);
+                profesor.setContraseña(contraseña);
+                profesor.setRol(rol);
+                profesorService.saveProfesor(profesor);
+                Notification.show("Registro exitoso!", 3000, Notification.Position.MIDDLE);
+                getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+
+            }else if(!emailField.isInvalid() && !estudianteService.isCorreoRegistrado(correo) && rol.equals("Estudiante")) {
+                Estudiante estudiante = new Estudiante();
+                estudiante.setNombre(nombre);
+                estudiante.setApellido(apellido);
+                estudiante.setCorreo(correo);
+                estudiante.setContraseña(contraseña);
+                estudiante.setRol(rol);
+                estudianteService.saveEstudiante(estudiante);
+
                 Notification.show("Registro exitoso!", 3000, Notification.Position.MIDDLE);
                 getUI().ifPresent(ui -> ui.navigate(LoginView.class));
             } else {

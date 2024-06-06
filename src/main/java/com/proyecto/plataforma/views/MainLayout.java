@@ -48,7 +48,8 @@ public class MainLayout extends AppLayout {
                 ));
             } else if ("PROFESOR".equals(user.getRol())) {
                 addToDrawer(new VerticalLayout(
-                        new RouterLink("Creador de Cursos", CreadorCursoView.class)
+                        //new RouterLink("Creador de Cursos", CreadorCursoView.class)
+                        new RouterLink("Gestión de Usuarios", GestionUsuarioView.class)
                 ));
             } else if ("ESTUDIANTE".equals(user.getRol())) {
                 addToDrawer(new VerticalLayout(
