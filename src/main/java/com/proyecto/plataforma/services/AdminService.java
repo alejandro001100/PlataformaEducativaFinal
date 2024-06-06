@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.spi.ServiceRegistry;
+import java.util.UUID;
 
 @Service
 public class AdminService {
@@ -17,8 +18,10 @@ public class AdminService {
 
     @Autowired
     private AdminRepository adminRepository;
-
     public Admin saveAdmin(Admin admin) {
+        if (admin.getId() == null || admin.getId().isEmpty()) {
+            admin.setId( UUID.randomUUID().toString());
+        }
         return adminRepository.save(admin);
     }
 

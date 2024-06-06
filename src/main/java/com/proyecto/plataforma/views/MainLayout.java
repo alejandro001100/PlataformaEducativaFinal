@@ -25,9 +25,14 @@ public class MainLayout extends AppLayout {
         H1 logo = new H1("Proyecto Plataforma Aprendizaje");
         logo.addClassNames("text-l", "m-m");
 
-        Button logoutButton = new Button("Logout", e -> {
+        Button logoutButton = new Button("Cerrar sesión", e -> {
+            // Invalidar la sesión
             VaadinSession.getCurrent().getSession().invalidate();
+            // Cerrar la sesión
             VaadinSession.getCurrent().close();
+            // Remover el usuario de la sesión
+            VaadinSession.getCurrent().getSession().setAttribute("user", null);
+            // Redirigir a la página de inicio de sesión
             getUI().ifPresent(ui -> ui.navigate(LoginView.class));
         });
 
@@ -42,16 +47,15 @@ public class MainLayout extends AppLayout {
     private void createDrawer() {
         User user = VaadinSession.getCurrent().getAttribute(User.class);
         if (user != null) {
-            if ("ADMIN".equals(user.getRol())) {
+            if ("Admin".equals(user.getRol())) {
                 addToDrawer(new VerticalLayout(
                         new RouterLink("Gestión de Usuarios", GestionUsuarioView.class)
                 ));
-            } else if ("PROFESOR".equals(user.getRol())) {
+            } else if ("Profesor".equals(user.getRol())) {
                 addToDrawer(new VerticalLayout(
-                        //new RouterLink("Creador de Cursos", CreadorCursoView.class)
                         new RouterLink("Gestión de Usuarios", GestionUsuarioView.class)
                 ));
-            } else if ("ESTUDIANTE".equals(user.getRol())) {
+            } else if ("Estudiante".equals(user.getRol())) {
                 addToDrawer(new VerticalLayout(
                         new RouterLink("Cursos", CreadorCursoView.class)
                 ));

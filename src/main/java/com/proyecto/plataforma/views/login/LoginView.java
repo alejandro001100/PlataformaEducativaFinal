@@ -5,11 +5,9 @@ import com.proyecto.plataforma.data.Profesor;
 import com.proyecto.plataforma.data.User;
 import com.proyecto.plataforma.services.EstudianteService;
 import com.proyecto.plataforma.services.ProfesorService;
-import com.proyecto.plataforma.services.UserService;
 import com.proyecto.plataforma.views.gestionusuario.GestionUsuarioView;
 import com.proyecto.plataforma.views.registro.RegistroView;
 import com.proyecto.plataforma.views.restablecerpassword.RestablecerPasswordView;
-import com.proyecto.plataforma.views.creadorcurso.CreadorCursoView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H3;
@@ -63,20 +61,15 @@ public class LoginView extends VerticalLayout {
             String correo = emailField.getValue();
             String contraseña = passwordField.getValue();
             Profesor profesor = profesorService.findByCorreo(correo);
-            Estudiante estudiante= estudianteService.findByCorreo(correo);
-            if (estudiante!= null && estudiante.getContraseña().equals(contraseña)) {
-                VaadinSession.getCurrent().setAttribute(Estudiante.class, estudiante);
+            Estudiante estudiante = estudianteService.findByCorreo(correo);
+            if (estudiante != null && estudiante.getContraseña().equals(contraseña)) {
+                VaadinSession.getCurrent().setAttribute(User.class, estudiante);
                 Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
-
-                getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class));
-
-                // Redirigir según el rol del usuario
-            } else if (profesor!= null && profesor.getContraseña().equals(contraseña)) {
-                VaadinSession.getCurrent().setAttribute(Profesor.class, profesor);
-                Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
-                //getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class));
                 getUI().ifPresent(ui -> ui.navigate(GestionUsuarioView.class));
-
+            } else if (profesor != null && profesor.getContraseña().equals(contraseña)) {
+                VaadinSession.getCurrent().setAttribute(User.class, profesor);
+                Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
+                getUI().ifPresent(ui -> ui.navigate( GestionUsuarioView.class));
             } else {
                 Notification.show("Correo o contraseña incorrectos.", 3000, Notification.Position.MIDDLE);
             }

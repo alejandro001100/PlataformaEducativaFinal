@@ -1,6 +1,10 @@
 package com.proyecto.plataforma.views.restablecerpassword;
 
+import com.proyecto.plataforma.data.Estudiante;
+import com.proyecto.plataforma.data.Profesor;
 import com.proyecto.plataforma.data.User;
+import com.proyecto.plataforma.services.EstudianteService;
+import com.proyecto.plataforma.services.ProfesorService;
 import com.proyecto.plataforma.services.UserService;
 import com.proyecto.plataforma.views.MainLayout;
 import com.proyecto.plataforma.views.login.LoginView;
@@ -17,12 +21,14 @@ import com.vaadin.flow.router.Route;
 @PageTitle("Restablecer Password")
 @Route(value = "restablecer-password", layout = MainLayout.class)
 public class RestablecerPasswordView extends VerticalLayout {
+    private final EstudianteService estudianteService;
+    private final ProfesorService profesorService;
+    private Estudiante estudianteActual;
+    private Profesor profesorActual;
 
-    private final UserService userService;
-    private User usuarioActual;
-
-    public RestablecerPasswordView(UserService userService) {
-        this.userService = userService;
+    public RestablecerPasswordView(EstudianteService estudianteService, ProfesorService profesorService) {
+        this.estudianteService = estudianteService;
+        this.profesorService = profesorService;
 
         EmailField emailField = new EmailField("Correo electrónico");
         PasswordField newPasswordField = new PasswordField("Nueva contraseña");
@@ -33,9 +39,18 @@ public class RestablecerPasswordView extends VerticalLayout {
 
         resetButton.addClickListener(event -> {
             String correo = emailField.getValue();
-            usuarioActual = userService.findByCorreo(correo);
-            if (usuarioActual != null) {
-                Notification.show("Bienvenido, " + usuarioActual.getNombre() + " " + usuarioActual.getApellido(), 3000, Notification.Position.MIDDLE);
+            estudianteActual = estudianteService.findByCorreo(correo);
+            profesorActual = profesorService.findByCorreo(correo);
+            if (estudianteActual != null) {
+                Notification.show("Bienvenido, " + estudianteActual.getNombre() + " " + estudianteActual.getApellido(), 3000, Notification.Position.MIDDLE);
+                emailField.setVisible(false);
+                resetButton.setVisible(false);
+                newPasswordField.setVisible(true);
+                confirmNewPasswordField.setVisible(true);
+                changePasswordButton.setVisible(true);
+                backButton.setVisible(true);
+            } else if (profesorActual!= null) {
+                Notification.show("Bienvenido, " + profesorActual.getNombre() + " " + profesorActual.getApellido(), 3000, Notification.Position.MIDDLE);
                 emailField.setVisible(false);
                 resetButton.setVisible(false);
                 newPasswordField.setVisible(true);
@@ -54,11 +69,17 @@ public class RestablecerPasswordView extends VerticalLayout {
                 Notification.show("Los campos de contraseña no pueden estar vacíos.", 3000, Notification.Position.MIDDLE);
                 return;
             }
-            if (nuevaContrasena.equals(confirmarNuevaContrasena)) {
-                usuarioActual.setContraseña(nuevaContrasena);
-                userService.saveUser(usuarioActual);
+            if (nuevaContrasena.equals(confirmarNuevaContrasena)&&estudianteActual!=null) {
+                estudianteActual.setContraseña(nuevaContrasena);
+                estudianteService.saveEstudiante(estudianteActual);
                 Notification.show("Contraseña cambiada exitosamente!", 3000, Notification.Position.MIDDLE);
                 getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+            } else if (nuevaContrasena.equals(confirmarNuevaContrasena)&&profesorActual!=null) {
+                profesorActual.setContraseña(nuevaContrasena);
+                profesorService.saveProfesor(profesorActual);
+                Notification.show("Contraseña cambiada exitosamente!", 3000, Notification.Position.MIDDLE);
+                getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+
             } else {
                 Notification.show("Las contraseñas no coinciden.", 3000, Notification.Position.MIDDLE);
             }
@@ -78,5 +99,4 @@ public class RestablecerPasswordView extends VerticalLayout {
         backButton.setVisible(false);
 
         add(new H3("Restablecer tu contraseña"), emailField, resetButton, newPasswordField, confirmNewPasswordField, changePasswordButton, backButton);
-    }
-}
+    }}
