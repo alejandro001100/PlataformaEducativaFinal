@@ -1,10 +1,10 @@
 package com.proyecto.plataforma.views.login;
 
-import com.proyecto.plataforma.data.Estudiante;
-import com.proyecto.plataforma.data.Profesor;
-import com.proyecto.plataforma.data.User;
-import com.proyecto.plataforma.services.EstudianteService;
+import com.proyecto.plataforma.data.*;
+import com.proyecto.plataforma.services.AdminService;
 import com.proyecto.plataforma.services.ProfesorService;
+//import com.proyecto.plataforma.views.creadorcurso.CreadorCursoView;
+import com.proyecto.plataforma.views.creadorcurso.CreadorCursoView;
 import com.proyecto.plataforma.views.gestionusuario.GestionUsuarioView;
 import com.proyecto.plataforma.views.registro.RegistroView;
 import com.proyecto.plataforma.views.restablecerpassword.RestablecerPasswordView;
@@ -24,17 +24,26 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "")
 @PageTitle("Login | Proyecto Plataforma Aprendizaje")
 public class LoginView extends VerticalLayout {
 
-    private final EstudianteService estudianteService;
-    private final ProfesorService profesorService;
+    private final EstudianteLista estudianteLista;
+    private final ProfesorLista profesorLista;
+    private final AdminLista adminLista;
 
-    public LoginView(EstudianteService estudianteService, ProfesorService profesorService) {
-        this.estudianteService = estudianteService;
-        this.profesorService = profesorService;
+    @Autowired
+    public LoginView(EstudianteLista estudianteLista, ProfesorLista profesorLista,AdminLista adminLista) {
+        this.estudianteLista = estudianteLista;
+        this.profesorLista = profesorLista;
+        this.adminLista = adminLista;
+
+
+        //Metodo para cargar los estudiantes desde MongoDB a la lista de estudiantes
+        estudianteLista.cargarEstudiantes();
+        profesorLista.cargarProfesor();
 
         setWidth("100%");
         getStyle().set("flex-grow", "1");
@@ -58,19 +67,35 @@ public class LoginView extends VerticalLayout {
         loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         loginButton.getStyle().set("margin-top", "10px");
         loginButton.addClickListener(event -> {
+
+            //Saca lo que el usuario escribie en los campos de texto
             String correo = emailField.getValue();
             String contraseña = passwordField.getValue();
-            Profesor profesor = profesorService.findByCorreo(correo);
-            Estudiante estudiante = estudianteService.findByCorreo(correo);
+            Profesor profesor = profesorLista.buscarProfesorCorreo(correo);
+            Estudiante estudiante = estudianteLista.buscarEstudianteCorreo(correo);
+            Admin admin = adminLista.buscarAdminCorreo(correo);
+
+            //Se ejecuta si el usuario es un estudiante y la contraseña es correcta
             if (estudiante != null && estudiante.getContraseña().equals(contraseña)) {
                 VaadinSession.getCurrent().setAttribute(User.class, estudiante);
                 Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
                 getUI().ifPresent(ui -> ui.navigate(GestionUsuarioView.class));
-            } else if (profesor != null && profesor.getContraseña().equals(contraseña)) {
+            }
+            //Se ejecuta si el usuario es un profesor y la contraseña es correcta
+            else if (profesor != null && profesor.getContraseña().equals(contraseña)) {
                 VaadinSession.getCurrent().setAttribute(User.class, profesor);
                 Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
-                getUI().ifPresent(ui -> ui.navigate( GestionUsuarioView.class));
-            } else {
+                getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class));
+            }
+            //Se ejecuta si el usuario es un admin y la contraseña es correcta
+            else if (admin !=null && admin.getContraseña().equals(contraseña)){
+                VaadinSession.getCurrent().setAttribute(User.class, admin);
+                Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
+                getUI().ifPresent(ui -> ui.navigate(GestionUsuarioView.class));
+
+            }
+            //Se ejecuta si el usuario no existe o la contraseña es incorrecta
+            else {
                 Notification.show("Correo o contraseña incorrectos.", 3000, Notification.Position.MIDDLE);
             }
         });

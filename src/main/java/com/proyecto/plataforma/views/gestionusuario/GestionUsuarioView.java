@@ -1,9 +1,6 @@
 package com.proyecto.plataforma.views.gestionusuario;
 
-import com.proyecto.plataforma.data.Admin;
-import com.proyecto.plataforma.data.Estudiante;
-import com.proyecto.plataforma.data.Profesor;
-import com.proyecto.plataforma.data.User;
+import com.proyecto.plataforma.data.*;
 import com.proyecto.plataforma.services.AdminService;
 import com.proyecto.plataforma.services.EstudianteService;
 import com.proyecto.plataforma.services.ProfesorService;
@@ -191,4 +188,180 @@ public class GestionUsuarioView extends VerticalLayout {
         dialog.add(dialogLayout);
         dialog.open();
     }
+
+/*
+    private final AdminLista adminLista;
+    private final EstudianteLista estudianteLista;
+    private final ProfesorLista profesorLista;
+    private final UserService userService;
+    private final Grid<User> grid;
+    private ListDataProvider<User> dataProvider;
+
+    public GestionUsuarioView( AdminLista adminLista,EstudianteLista estudianteLista,  ProfesorLista profesorLista, UserService userService) {
+        this.adminLista = adminLista;
+        this.estudianteLista = estudianteLista;
+        this.profesorLista = profesorLista;
+        this.userService = userService;
+
+        adminLista.cargarAdmin();
+        estudianteLista.cargarEstudiantes();
+        profesorLista.cargarProfesor();
+
+        setWidth("100%");
+        getStyle().set("flex-grow", "1");
+
+        HorizontalLayout layoutRow = new HorizontalLayout();
+        layoutRow.addClassName(Gap.MEDIUM);
+        layoutRow.setWidth("100%");
+        layoutRow.setHeight("min-content");
+
+        H3 h3 = new H3("Gestión de usuarios");
+        h3.setWidth("max-content");
+
+        Button logoutButton = new Button("Cerrar sesión");
+        logoutButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        logoutButton.addClickListener(event -> {
+            VaadinSession.getCurrent().getSession().invalidate();
+            VaadinSession.getCurrent().close();
+            getUI().ifPresent(ui -> ui.navigate("login"));
+        });
+
+        layoutRow.add(h3, logoutButton);
+        layoutRow.setFlexGrow(1, h3);
+        layoutRow.setFlexGrow(0, logoutButton);
+        layoutRow.setVerticalComponentAlignment(Alignment.END, logoutButton);
+
+        grid = new Grid<>(User.class);
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.setWidth("100%");
+        grid.getStyle().set("flex-grow", "0");
+
+        List<User> users = new ArrayList<>();
+        users.addAll(adminLista.getAllAdmins());
+        users.addAll(estudianteLista.getAllEstudiantes());
+        users.addAll(profesorLista.getAllProfesores());
+
+        dataProvider = DataProvider.ofCollection(users);
+        grid.setDataProvider(dataProvider);
+
+        grid.setColumns("nombre", "apellido", "correo", "rol");
+
+        grid.addColumn(new ComponentRenderer<>(user -> {
+            Button editButton = new Button("Editar");
+            editButton.addClickListener(event -> abrirFormulario(user));
+            return editButton;
+        })).setHeader("Acciones");
+
+        grid.addColumn(new ComponentRenderer<>(user -> {
+            Button deleteButton = new Button("Eliminar");
+            deleteButton.addClickListener(event -> {
+                if (user.getRol().equals("Admin")) {
+                    adminLista.eliminarAdmin((Admin) user);
+                    adminLista.cargarAdmin();
+                } else if (user.getRol().equals("Estudiante")) {
+                    estudianteLista.eliminarEstudiante((Estudiante) user);
+                    estudianteLista.cargarEstudiantes();
+                } else if (user.getRol().equals("Profesor")) {
+                    profesorLista.eliminarProfesor((Profesor) user);
+                    profesorLista.cargarProfesor();
+                }
+                dataProvider.getItems().remove(user);
+                dataProvider.refreshAll();
+            });
+            return deleteButton;
+        })).setHeader("Acciones");
+
+        Button buttonPrimary = new Button("Añadir Usuario");
+        buttonPrimary.setWidth("min-content");
+        buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        buttonPrimary.addClickListener(event -> abrirFormulario(new User()));
+
+        Button deleteSelectedButton = new Button("Eliminar Seleccionados");
+        deleteSelectedButton.setWidth("min-content");
+        deleteSelectedButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        deleteSelectedButton.addClickListener(event -> {
+            List<User> selectedUsers = grid.getSelectedItems().stream().collect(Collectors.toList());
+            selectedUsers.forEach(user -> {
+                if (user.getRol().equals("Admin")) {
+                    adminLista.eliminarAdmin((Admin) user);
+                    adminLista.cargarAdmin();
+                } else if (user.getRol().equals("Estudiante")) {
+                    estudianteLista.eliminarEstudiante((Estudiante) user);
+                    estudianteLista.cargarEstudiantes();
+                } else if (user.getRol().equals("Profesor")) {
+                    profesorLista.eliminarProfesor((Profesor) user);
+                    profesorLista.cargarProfesor();
+
+                }
+                dataProvider.getItems().remove(user);
+            });
+            dataProvider.refreshAll();
+        });
+
+        add(layoutRow, grid, buttonPrimary, deleteSelectedButton);
+    }
+
+    private void abrirFormulario(User user) {
+        Dialog dialog = new Dialog();
+        FormLayout formLayout = new FormLayout();
+
+        TextField nombreField = new TextField("Nombre");
+        nombreField.setValue(user.getNombre() != null ? user.getNombre() : "");
+        TextField apellidoField = new TextField("Apellido");
+        apellidoField.setValue(user.getApellido() != null ? user.getApellido() : "");
+        TextField correoField = new TextField("Correo");
+        correoField.setValue(user.getCorreo() != null ? user.getCorreo() : "");
+        PasswordField passwordField = new PasswordField("Contraseña");
+        ComboBox<String> rolField = new ComboBox<>("Rol");
+        rolField.setItems("Estudiante", "Profesor", "Admin");
+        rolField.setValue(user.getRol() != null ? user.getRol() : "");
+
+        formLayout.add(nombreField, apellidoField, correoField, passwordField, rolField);
+
+        Button saveButton = new Button("Guardar", event -> {
+            user.setNombre(nombreField.getValue());
+            user.setApellido(apellidoField.getValue());
+            user.setCorreo(correoField.getValue());
+            user.setContraseña(passwordField.getValue());
+            user.setRol(rolField.getValue());
+
+            if (user instanceof Admin) {
+                adminLista.agregarAdmin((Admin) user);
+                adminLista.cargarAdmin();
+            } else if (user instanceof Estudiante) {
+                estudianteLista.agregarEstudiante((Estudiante) user);
+                estudianteLista.cargarEstudiantes();
+            } else if (user instanceof Profesor) {
+                profesorLista.agregarProfesor((Profesor) user);
+                profesorLista.cargarProfesor();
+            } else {
+                if ("Admin".equals(user.getRol())) {
+                    adminLista.agregarAdmin(new Admin(user.getNombre(), user.getApellido(), user.getCorreo(), user.getContraseña(), user.getRol(), UUID.randomUUID().toString()));
+                    adminLista.cargarAdmin();
+                } else if ("Estudiante".equals(user.getRol())) {
+                    estudianteLista.agregarEstudiante(new Estudiante(user.getNombre(), user.getApellido(), user.getCorreo(), user.getContraseña(), user.getRol(), UUID.randomUUID().toString()));
+                    estudianteLista.cargarEstudiantes();
+                } else if ("Profesor".equals(user.getRol())) {
+                    profesorLista.agregarProfesor(new Profesor(user.getNombre(), user.getApellido(), user.getCorreo(), user.getContraseña(), user.getRol(), UUID.randomUUID().toString()));
+                    profesorLista.cargarProfesor();
+                }
+            }
+
+            //dataProvider.getItems().clear();
+            //dataProvider.getItems().addAll(StreamSupport.stream(adminService.findAll().spliterator(), false).collect(Collectors.toList()));
+            //dataProvider.getItems().addAll(StreamSupport.stream(estudianteService.findAll().spliterator(), false).collect(Collectors.toList()));
+            //dataProvider.getItems().addAll(StreamSupport.stream(profesorService.findAll().spliterator(), false).collect(Collectors.toList()));
+            dataProvider.refreshAll();
+            dialog.close();
+        });
+
+        Button cancelButton = new Button("Cancelar", event -> dialog.close());
+
+        HorizontalLayout buttonsLayout = new HorizontalLayout(saveButton, cancelButton);
+
+        VerticalLayout dialogLayout = new VerticalLayout(formLayout, buttonsLayout);
+        dialog.add(dialogLayout);
+        dialog.open();
+    }*/
+
 }
