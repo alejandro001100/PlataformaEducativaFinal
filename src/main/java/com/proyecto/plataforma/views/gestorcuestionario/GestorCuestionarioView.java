@@ -1,4 +1,4 @@
-/*package com.proyecto.plataforma.views.gestorcuestionario;
+package com.proyecto.plataforma.views.gestorcuestionario;
 
 import com.proyecto.plataforma.services.UserService;
 import com.proyecto.plataforma.views.MainLayout;
@@ -57,4 +57,3 @@ public class GestorCuestionarioView extends Composite<VerticalLayout> {
     @Autowired()
     private UserService samplePersonService;
 }
-*/

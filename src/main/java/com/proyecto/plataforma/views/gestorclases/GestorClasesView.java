@@ -2,6 +2,7 @@ package com.proyecto.plataforma.views.gestorclases;
 
 import com.proyecto.plataforma.data.Cursos;
 import com.proyecto.plataforma.data.CursosLista; // Suponiendo que esta es tu clase de servicio para gestionar cursos
+import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
-@Route("gestor-clases")
+@Route(value = "gestor-clases", layout = MainLayout.class)
 @UIScope
 @Component
 public class GestorClasesView extends VerticalLayout {

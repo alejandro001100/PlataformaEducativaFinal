@@ -167,4 +167,3 @@ public class CreadorCuestionarioView extends Composite<VerticalLayout> {
         comboBox.setItemLabelGenerator(item -> ((SampleItem) item).label());
     }
 }
-*/
