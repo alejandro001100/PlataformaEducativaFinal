@@ -5,6 +5,7 @@ import com.proyecto.plataforma.services.AdminService;
 import com.proyecto.plataforma.services.EstudianteService;
 import com.proyecto.plataforma.services.ProfesorService;
 import com.proyecto.plataforma.services.UserService;
+import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -22,6 +23,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
+import org.w3c.dom.CDATASection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@Route("gestion-usuario")
+@Route(value = "gestion-usuario", layout = MainLayout.class)
+
 public class GestionUsuarioView extends VerticalLayout {
 
     private final AdminService adminService;

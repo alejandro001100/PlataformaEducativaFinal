@@ -36,6 +36,7 @@ private final CursosService cursosService;
 
     public void cargarCursos() {
         List<Cursos> cursos = (List<Cursos>) cursosService.findAll();
+        cursosLista.clear ();
         cursosLista.addAll(cursos);
     }
 
@@ -66,8 +67,6 @@ private final CursosService cursosService;
         }
         return cursosPorArea;
     }
-
-
 
 
 }

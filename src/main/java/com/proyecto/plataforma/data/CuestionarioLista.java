@@ -6,17 +6,20 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Component
 public class CuestionarioLista {
-    List<Cursos> cuestionarioLista;
+    private List<Cuestionario> cuestionarioLista;
     private final CuestionarioService cuestionarioService;
+
     @Autowired
-    public CursosLista(CuestionarioService cuestionarioService) {
+    public CuestionarioLista(CuestionarioService cuestionarioService) {
         this.cuestionarioService = cuestionarioService;
-        cuestionarioLista = new ArrayList<>();
+        this.cuestionarioLista = new ArrayList<>();
+        cargarCuestionarios();
     }
 
-    public List<Cursos> getCuestionarioLista() {
+    public List<Cuestionario> getCuestionarioLista() {
         return cuestionarioLista;
     }
 
@@ -25,49 +28,36 @@ public class CuestionarioLista {
     }
 
     public void guardarCuestionario(Cuestionario cuestionario) {
-        cuestionarioLista.add(cuestionario);
         cuestionarioService.saveCuestionario(cuestionario);
+        cargarCuestionarios();
     }
 
     public void eliminarCuestionario(Cuestionario cuestionario) {
-        cuestionarioLista.remove(cuestionario);
         cuestionarioService.delete(cuestionario);
+        cargarCuestionarios();
     }
 
-    public void cargarCuestionario() {
-        List<Cuestionario> cuestionario = (List<Cuestionario>) cuestionarioService.findAll();
-        cuestionarioLista.addAll(cuestionario);
+    public void cargarCuestionarios() {
+        List<Cuestionario> cuestionarios = cuestionarioService.findAll();
+        cuestionarioLista.clear(); // Asegúrate de limpiar la lista antes de añadir nuevos elementos
+        cuestionarioLista.addAll(cuestionarios);
     }
 
     public Cuestionario buscarCuestionarioTitulo(String titulo) {
-        for (Cuestionario cu : cuestionarioLista) {
-            if (cu.getTitulo().equals(titulo)) {
-                return cu;
+        for (Cuestionario c : cuestionarioLista) {
+            if (c.getTitulo().equals(titulo)) {
+                return c;
             }
         }
         return null;
     }
 
-    public boolean isTituloRegistradoCuestionario(String titulo) {
-        for (Cuestionario cu : cuestionarioLista) {
-            if (cu.getTitulo().equals(titulo)) {
+    public boolean isTituloRegistrado(String titulo) {
+        for (Cuestionario c : cuestionarioLista) {
+            if (c.getTitulo().equals(titulo)) {
                 return true;
             }
         }
         return false;
     }
-
-    public List<Cuestionario> getCuestionarioPorArea(String area) {
-        List<Cuestionario> cuestionarioPorArea = new ArrayList<>();
-        for (Cuestionario cu : cuestionarioLista) {
-            if (cu.getArea().equals(area)) {
-                cuestionarioPorArea.add(cu);
-            }
-        }
-        return cuestionarioPorArea;
-    }
-
-
-
-
 }

@@ -4,7 +4,6 @@ import com.proyecto.plataforma.data.Cursos;
 import com.proyecto.plataforma.data.CursosLista;
 import com.proyecto.plataforma.views.MainLayout;
 import com.proyecto.plataforma.views.gestorclases.GestorClasesView;
-import com.proyecto.plataforma.views.login.LoginView;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -221,8 +220,8 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
         comboBoxArea.setItemLabelGenerator(item -> ((SampleItem) item).label());
     }*/
 
+        cursosLista.cargarCursos ();
 
-        cursosLista.cargarCursos();
         HorizontalLayout layoutRow = new HorizontalLayout();
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H1 h1 = new H1();
@@ -267,6 +266,7 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
         layoutColumn2.add(buttonPrimary);
 
         buttonPrimary.addClickListener(e -> {
+
             String titulo = textFieldTitulo.getValue();
             String area = comboBoxArea.getValue() != null ? comboBoxArea.getValue().label() : "Área no seleccionada";
             String resumen = textAreaResumen.getValue();
@@ -274,7 +274,10 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
             if(cursosLista.isTituloRegistrado(titulo)) {
                 Notification.show("El título del curso ya está registrado", 3000, Notification.Position.MIDDLE);
                 return;
-            }else {
+            } else if ( titulo.isEmpty () || area.isEmpty () || resumen.isEmpty () ) {
+                Notification.show("Llene todo los campos" );
+                
+            } else {
                 Cursos cursos = new Cursos(titulo, resumen, area);
                 cursosLista.guardarCursos(cursos);
                 Notification.show("Curso guardado con éxito!", 3000, Notification.Position.MIDDLE);

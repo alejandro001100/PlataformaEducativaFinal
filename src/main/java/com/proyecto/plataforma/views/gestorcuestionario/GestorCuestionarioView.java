@@ -1,60 +1,153 @@
-/*package com.proyecto.plataforma.views.gestorcuestionario;
+package com.proyecto.plataforma.views.gestorcuestionario;
 
-import com.proyecto.plataforma.services.UserService;
+import com.proyecto.plataforma.data.Cuestionario;
+import com.proyecto.plataforma.data.CuestionarioLista;
+import com.proyecto.plataforma.data.Pregunta;
 import com.proyecto.plataforma.views.MainLayout;
-import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
-import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 
-@PageTitle("Gestor Cuestionario")
+import java.util.ArrayList;
+import java.util.List;
+
 @Route(value = "gestor-cuestionario", layout = MainLayout.class)
-@Uses(Icon.class)
-public class GestorCuestionarioView extends Composite<VerticalLayout> {
+public class GestorCuestionarioView extends VerticalLayout {
 
-    public GestorCuestionarioView() {
-        HorizontalLayout layoutRow = new HorizontalLayout();
-        H3 h3 = new H3();
-        Grid multiSelectGrid = new Grid(SamplePerson.class);
-        Button buttonPrimary = new Button();
-        getContent().setWidth("100%");
-        getContent().getStyle().set("flex-grow", "1");
-        layoutRow.addClassName(Gap.MEDIUM);
-        layoutRow.setWidth("100%");
-        layoutRow.setHeight("min-content");
-        h3.setText("Gestor de Cuestionario");
-        h3.setWidth("max-content");
-        multiSelectGrid.setSelectionMode(Grid.SelectionMode.MULTI);
-        multiSelectGrid.setWidth("100%");
-        multiSelectGrid.getStyle().set("flex-grow", "0");
-        setGridSampleData(multiSelectGrid);
-        buttonPrimary.setText("Añadir");
-        buttonPrimary.setWidth("min-content");
-        buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        getContent().add(layoutRow);
-        layoutRow.add(h3);
-        getContent().add(multiSelectGrid);
-        getContent().add(buttonPrimary);
+    private final CuestionarioLista cuestionarioLista;
+    private final Grid<Cuestionario> grid;
+
+    @Autowired
+    public GestorCuestionarioView(CuestionarioLista cuestionarioLista) {
+        this.cuestionarioLista = cuestionarioLista;
+        this.grid = new Grid<>(Cuestionario.class);
+
+        cargarCuestionarios();
+
+        grid.removeColumnByKey("id");
+        grid.removeColumnByKey("preguntas");
+        grid.removeColumnByKey("titulo");
+
+        grid.addColumn(Cuestionario::getTitulo).setHeader("Título");
+        grid.addColumn(cuestionario -> cuestionario.getPreguntas().size()).setHeader("Número de Preguntas");
+
+        grid.addColumn(new ComponentRenderer<>(cuestionario -> {
+            Div div = new Div();
+            int index = 1;
+            for (Pregunta pregunta : cuestionario.getPreguntas()) {
+                Span span = new Span("Pregunta " + index + ": " + pregunta.getTexto());
+                span.getStyle().set("display", "block");
+                div.add(span);
+                index++;
+            }
+            return div;
+        })).setHeader("Preguntas");
+
+        grid.addColumn(new ComponentRenderer<>(cuestionario -> {
+            Div div = new Div();
+            for (Pregunta pregunta : cuestionario.getPreguntas()) {
+                Div preguntaDiv = new Div();
+                preguntaDiv.add(new Span("Respuestas: " + String.join(", ", pregunta.getOpciones())));
+                div.add(preguntaDiv);
+            }
+            return div;
+        })).setHeader("Respuestas");
+
+        grid.addColumn(new ComponentRenderer<>(cuestionario -> {
+            Div div = new Div();
+            for (Pregunta pregunta : cuestionario.getPreguntas()) {
+                Div preguntaDiv = new Div();
+                preguntaDiv.add(new Span("Respuesta Correcta: " + pregunta.getRespuestaCorrecta()));
+                div.add(preguntaDiv);
+            }
+            return div;
+        })).setHeader("Respuestas Correctas");
+
+        Button editarPreguntaButton = new Button("Editar Pregunta", event -> {
+            Cuestionario selectedCuestionario = grid.asSingleSelect().getValue();
+            if (selectedCuestionario != null) {
+                abrirDialogoEdicion(selectedCuestionario);
+            } else {
+                Notification.show("Seleccione un cuestionario para editar");
+            }
+        });
+
+        Button deleteButton = new Button("Eliminar Cuestionario Seleccionado", event -> {
+            Cuestionario selectedCuestionario = grid.asSingleSelect().getValue();
+            if (selectedCuestionario != null) {
+                cuestionarioLista.eliminarCuestionario(selectedCuestionario);
+                Notification.show("Cuestionario eliminado exitosamente");
+                cargarCuestionarios();
+            } else {
+                Notification.show("Seleccione un cuestionario para eliminar");
+            }
+        });
+
+        add(grid, editarPreguntaButton, deleteButton);
     }
 
-    private void setGridSampleData(Grid grid) {
-        grid.setItems(query -> samplePersonService.list(
-                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
-                .stream());
+    private void cargarCuestionarios() {
+        cuestionarioLista.cargarCuestionarios();
+        grid.setItems(cuestionarioLista.getCuestionarioLista());
     }
 
-    @Autowired()
-    private UserService samplePersonService;
+    private void abrirDialogoEdicion(Cuestionario cuestionario) {
+        Dialog dialog = new Dialog();
+        VerticalLayout layout = new VerticalLayout();
+
+        List<TextField> preguntaFields = new ArrayList<>();
+        List<TextArea> opcionesFields = new ArrayList<>();
+        List<TextField> respuestaCorrectaFields = new ArrayList<>();
+
+        for (int i = 0; i < cuestionario.getPreguntas().size(); i++) {
+            Pregunta pregunta = cuestionario.getPreguntas().get(i);
+
+            Span preguntaLabel = new Span("Pregunta " + (i + 1));
+            preguntaLabel.getStyle().set("font-weight", "bold");
+            TextField preguntaField = new TextField("Texto de la pregunta");
+            preguntaField.setValue(pregunta.getTexto());
+            preguntaFields.add(preguntaField);
+
+            TextArea opcionesField = new TextArea("Opciones (separadas por comas)");
+            opcionesField.setValue(String.join(", ", pregunta.getOpciones()));
+            opcionesFields.add(opcionesField);
+
+            TextField respuestaCorrectaField = new TextField("Respuesta Correcta");
+            respuestaCorrectaField.setValue(pregunta.getRespuestaCorrecta());
+            respuestaCorrectaFields.add(respuestaCorrectaField);
+
+            layout.add(preguntaLabel, preguntaField, opcionesField, respuestaCorrectaField);
+        }
+
+        Button saveButton = new Button("Guardar", event -> {
+            for (int i = 0; i < cuestionario.getPreguntas().size(); i++) {
+                Pregunta pregunta = cuestionario.getPreguntas().get(i);
+                pregunta.setTexto(preguntaFields.get(i).getValue());
+                pregunta.setOpciones(List.of(opcionesFields.get(i).getValue().split(", ")));
+                pregunta.setRespuestaCorrecta(respuestaCorrectaFields.get(i).getValue());
+            }
+            cuestionarioLista.guardarCuestionario(cuestionario);
+            Notification.show("Pregunta actualizada exitosamente");
+            cargarCuestionarios();
+            dialog.close();
+        });
+
+        Button cancelButton = new Button("Cancelar", event -> dialog.close());
+
+        HorizontalLayout buttonsLayout = new HorizontalLayout(saveButton, cancelButton);
+        layout.add(buttonsLayout);
+
+        dialog.add(layout);
+        dialog.open();
+    }
 }
-*/
