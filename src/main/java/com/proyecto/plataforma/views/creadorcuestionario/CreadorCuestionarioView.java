@@ -1,4 +1,4 @@
-/*package com.proyecto.plataforma.views.creadorcuestionario;
+package com.proyecto.plataforma.views.creadorcuestionario;
 
 import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.Composite;
