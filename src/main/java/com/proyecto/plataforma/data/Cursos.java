@@ -3,18 +3,33 @@ package com.proyecto.plataforma.data;
 import com.vaadin.flow.component.template.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "cursos")
-public class Cursos implements Comparable<Cursos>{
+public class Cursos implements Comparable<Cursos> {
     @Id
     private String id;
     private String titulo;
     private String descripcion;
     private String area;
+    private List<Capitulo> capitulos; // Añadir lista de capítulos
 
-    public Cursos(String titulo, String descripcion, String area) {
+    public Cursos(String id, String titulo, String descripcion, String area) {
+        this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.area = area;
+        this.capitulos = new ArrayList<>(); // Inicializar lista de capítulos
+    }
+
+    // Getters y setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitulo() {
@@ -39,6 +54,14 @@ public class Cursos implements Comparable<Cursos>{
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public List<Capitulo> getCapitulos() {
+        return capitulos;
+    }
+
+    public void setCapitulos(List<Capitulo> capitulos) {
+        this.capitulos = capitulos;
     }
 
     @Override

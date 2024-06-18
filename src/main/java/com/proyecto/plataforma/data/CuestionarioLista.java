@@ -39,7 +39,7 @@ public class CuestionarioLista {
 
     public void cargarCuestionarios() {
         List<Cuestionario> cuestionarios = cuestionarioService.findAll();
-        cuestionarioLista.clear(); // Asegúrate de limpiar la lista antes de añadir nuevos elementos
+        cuestionarioLista.clear();
         cuestionarioLista.addAll(cuestionarios);
     }
 

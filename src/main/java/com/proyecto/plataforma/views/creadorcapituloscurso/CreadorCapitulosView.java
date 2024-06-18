@@ -1,6 +1,5 @@
-/*package com.proyecto.plataforma.views.creadorcapituloscurso;
+package com.proyecto.plataforma.views.creadorcapituloscurso;
 
-import com.proyecto.plataforma.components.QuillEditor;
 import com.proyecto.plataforma.data.Capitulo;
 import com.proyecto.plataforma.data.Cursos;
 import com.proyecto.plataforma.services.CursosService;
@@ -14,21 +13,25 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 @Route(value = "creador-capitulos", layout = MainLayout.class)
 public class CreadorCapitulosView extends VerticalLayout {
 
     @Autowired
     public CreadorCapitulosView(CursosService cursosService) {
         String cursoId = (String) VaadinSession.getCurrent().getAttribute("cursoId");
-        Cursos curso = cursosService.findById(cursoId);
+        Optional<Cursos> optionalCurso = cursosService.findById(cursoId);
 
-        if (curso == null) {
+        if (!optionalCurso.isPresent()) {
             Notification.show("No se encontró el curso seleccionado");
             return;
         }
 
+        Cursos curso = optionalCurso.get();
+
         TextField capituloTituloField = new TextField("Título del Capítulo");
-        QuillEditor capituloContenidoField = new QuillEditor();
+        TextField capituloContenidoField = new TextField("Contenido del Capítulo");
 
         Button saveButton = new Button("Guardar Capítulo", event -> {
             String capituloTitulo = capituloTituloField.getValue();
@@ -43,7 +46,7 @@ public class CreadorCapitulosView extends VerticalLayout {
             cursosService.saveCursos(curso);
             Notification.show("Capítulo guardado exitosamente");
             capituloTituloField.clear();
-            capituloContenidoField.setValue("");
+            capituloContenidoField.clear();
         });
 
         Button regresarButton = new Button("Regresar", event -> getUI().ifPresent(ui -> ui.navigate(MainLayout.class)));
@@ -51,4 +54,3 @@ public class CreadorCapitulosView extends VerticalLayout {
         add(capituloTituloField, capituloContenidoField, new HorizontalLayout(saveButton, regresarButton));
     }
 }
-*/

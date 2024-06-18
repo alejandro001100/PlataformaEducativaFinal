@@ -2,6 +2,7 @@ package com.proyecto.plataforma.data;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
 @Document(collection = "preguntas")
@@ -12,6 +13,7 @@ public class Pregunta {
     private TipoPregunta tipo;
     private List<String> opciones;
     private String respuestaCorrecta;
+    private int puntaje; // Asegúrate de que este campo es int
 
     // Getters y Setters
     public String getId() {
@@ -52,5 +54,13 @@ public class Pregunta {
 
     public void setRespuestaCorrecta(String respuestaCorrecta) {
         this.respuestaCorrecta = respuestaCorrecta;
+    }
+
+    public int getPuntaje() {
+        return puntaje;
+    }
+
+    public void setPuntaje(int puntaje) {
+        this.puntaje = puntaje;
     }
 }

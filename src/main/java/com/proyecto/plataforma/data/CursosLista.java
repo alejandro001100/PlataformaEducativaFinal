@@ -6,10 +6,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Component
 public class CursosLista {
-    List<Cursos> cursosLista;
-private final CursosService cursosService;
+    private List<Cursos> cursosLista;
+    private final CursosService cursosService;
+
     @Autowired
     public CursosLista(CursosService cursosService) {
         this.cursosService = cursosService;
@@ -25,7 +27,9 @@ private final CursosService cursosService;
     }
 
     public void guardarCursos(Cursos cursos) {
-        cursosLista.add(cursos);
+        if (!cursosLista.contains(cursos)) {
+            cursosLista.add(cursos);
+        }
         cursosService.saveCursos(cursos);
     }
 
@@ -36,7 +40,7 @@ private final CursosService cursosService;
 
     public void cargarCursos() {
         List<Cursos> cursos = (List<Cursos>) cursosService.findAll();
-        cursosLista.clear ();
+        cursosLista.clear();
         cursosLista.addAll(cursos);
     }
 
@@ -67,6 +71,4 @@ private final CursosService cursosService;
         }
         return cursosPorArea;
     }
-
-
 }

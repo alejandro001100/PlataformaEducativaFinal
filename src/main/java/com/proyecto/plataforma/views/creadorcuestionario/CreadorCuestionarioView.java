@@ -8,7 +8,6 @@ import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -16,122 +15,159 @@ import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-@Route(value = "creador-cuestionario", layout = MainLayout.class)
+@Route(value = "crear-cuestionario", layout = MainLayout.class)
 public class CreadorCuestionarioView extends VerticalLayout {
 
     private final CuestionarioService cuestionarioService;
-    private List<Pregunta> preguntas;
+    private final TextField tituloField;
+    private final ComboBox<Integer> tiempoExamenComboBox;
+    private final TextField cantidadPreguntasField;
+    private final ComboBox<Integer> puntajeTotalComboBox;
+    private final Button generarPreguntasButton;
+    private final List<PreguntaLayout> preguntasLayouts = new ArrayList<>();
 
     @Autowired
     public CreadorCuestionarioView(CuestionarioService cuestionarioService) {
         this.cuestionarioService = cuestionarioService;
-        this.preguntas = new ArrayList<>();
+        this.tituloField = new TextField("Título del Cuestionario");
+        this.tiempoExamenComboBox = new ComboBox<>("Tiempo del Examen (minutos)");
+        this.cantidadPreguntasField = new TextField("Cantidad de Preguntas");
+        this.puntajeTotalComboBox = new ComboBox<>("Puntaje Total del Examen");
+        this.generarPreguntasButton = new Button("Generar Preguntas");
 
-        TextField tituloField = new TextField("Cuestionario");
-        TextArea preguntaField = new TextArea("Pregunta");
+        tiempoExamenComboBox.setItems(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60);
+        puntajeTotalComboBox.setItems(10, 20);
 
-        Button verdaderoFalsoButton = new Button("Verdadero o Falso");
-        Button opcionMultipleButton = new Button("Opción Múltiple");
+        generarPreguntasButton.addClickListener(event -> generarPreguntas());
 
-        ComboBox<String> verdaderoFalsoComboBox = new ComboBox<>("Verdadero o Falso");
-        verdaderoFalsoComboBox.setItems("Verdadero", "Falso");
+        add(tituloField, tiempoExamenComboBox, cantidadPreguntasField, puntajeTotalComboBox, generarPreguntasButton);
+    }
 
-        TextArea opcionesField = new TextArea("Opciones de Respuesta");
-        TextField respuestaCorrectaField = new TextField("Respuesta Correcta");
+    private void generarPreguntas() {
+        preguntasLayouts.clear();
+        removeAll();
+        add(tituloField, tiempoExamenComboBox, cantidadPreguntasField, puntajeTotalComboBox, generarPreguntasButton);
 
-        Button addPreguntaButton = new Button("Añadir Pregunta");
-        Button saveCuestionarioButton = new Button("Guardar Cuestionario");
+        int cantidadPreguntas;
+        int puntajeTotal;
 
-        verdaderoFalsoComboBox.setVisible(false);
-        opcionesField.setVisible(false);
-        respuestaCorrectaField.setVisible(false);
+        try {
+            cantidadPreguntas = Integer.parseInt(cantidadPreguntasField.getValue());
+            puntajeTotal = puntajeTotalComboBox.getValue();
+        } catch (NumberFormatException | NullPointerException e) {
+            Notification.show("Ingrese valores válidos para la cantidad de preguntas y el puntaje total");
+            return;
+        }
 
-        verdaderoFalsoButton.addClickListener(event -> {
-            verdaderoFalsoComboBox.setVisible(true);
-            opcionesField.setVisible(false);
-            respuestaCorrectaField.setVisible(false);
-        });
+        int puntajePorPregunta = puntajeTotal / cantidadPreguntas;
 
-        opcionMultipleButton.addClickListener(event -> {
-            verdaderoFalsoComboBox.setVisible(false);
-            opcionesField.setVisible(true);
-            respuestaCorrectaField.setVisible(true);
-        });
+        for (int i = 0; i < cantidadPreguntas; i++) {
+            PreguntaLayout preguntaLayout = new PreguntaLayout(i + 1, puntajePorPregunta, puntajeTotal);
+            preguntasLayouts.add(preguntaLayout);
+            add(preguntaLayout);
+        }
 
-        addPreguntaButton.addClickListener(event -> {
-            String textoPregunta = preguntaField.getValue();
-            TipoPregunta tipoPregunta = verdaderoFalsoComboBox.isVisible() ? TipoPregunta.VERDADERO_FALSO : TipoPregunta.OPCION_MULTIPLE;
-            String respuestaCorrecta = "";
-            List<String> opciones = new ArrayList<>();
+        Button saveCuestionarioButton = new Button("Guardar Cuestionario", event -> guardarCuestionario(puntajeTotal));
+        add(saveCuestionarioButton);
+    }
 
-            if (textoPregunta == null || textoPregunta.trim().isEmpty()) {
-                Notification.show("La pregunta no puede estar vacía", 3000, Notification.Position.MIDDLE);
-                return;
-            }
+    private void guardarCuestionario(int puntajeTotal) {
+        List<Pregunta> preguntas = new ArrayList<>();
+        int totalPuntaje = 0;
 
-            if (tipoPregunta == TipoPregunta.VERDADERO_FALSO) {
-                respuestaCorrecta = verdaderoFalsoComboBox.getValue();
-                if (respuestaCorrecta == null) {
-                    Notification.show("Debe seleccionar una opción para Verdadero o Falso", 3000, Notification.Position.MIDDLE);
-                    return;
-                }
-                opciones.add("Verdadero");
-                opciones.add("Falso");
-            } else if (tipoPregunta == TipoPregunta.OPCION_MULTIPLE) {
-                String opcionesText = opcionesField.getValue();
-                if (opcionesText == null || opcionesText.trim().isEmpty()) {
-                    Notification.show("Debe ingresar opciones para Opción Múltiple", 3000, Notification.Position.MIDDLE);
-                    return;
-                }
-                String[] opcionesArray = opcionesText.split(",");
-                for (String opcion : opcionesArray) {
-                    opciones.add(opcion.trim());
-                }
-                respuestaCorrecta = respuestaCorrectaField.getValue();
-                if (respuestaCorrecta == null || respuestaCorrecta.trim().isEmpty()) {
-                    Notification.show("Debe ingresar una respuesta correcta para Opción Múltiple", 3000, Notification.Position.MIDDLE);
-                    return;
-                }
-            }
-
-            Pregunta pregunta = new Pregunta();
-            pregunta.setTexto(textoPregunta);
-            pregunta.setTipo(tipoPregunta);
-            pregunta.setOpciones(opciones);
-            pregunta.setRespuestaCorrecta(respuestaCorrecta);
-
+        for (PreguntaLayout layout : preguntasLayouts) {
+            Pregunta pregunta = layout.getPregunta();
             preguntas.add(pregunta);
-            preguntaField.clear();
-            verdaderoFalsoComboBox.clear();
-            opcionesField.clear();
-            respuestaCorrectaField.clear();
-        });
+            totalPuntaje += pregunta.getPuntaje();
+        }
 
-        saveCuestionarioButton.addClickListener(event -> {
-            String titulo = tituloField.getValue();
-            if (titulo == null || titulo.trim().isEmpty()) {
-                Notification.show("El título del cuestionario no puede estar vacío", 3000, Notification.Position.MIDDLE);
-                return;
+        if (totalPuntaje != puntajeTotal) {
+            Notification.show("El puntaje total asignado a las preguntas no coincide con el puntaje total del examen.");
+            return;
+        }
+
+        Cuestionario cuestionario = new Cuestionario();
+        cuestionario.setTitulo(tituloField.getValue());
+        cuestionario.setTiempoExamen(tiempoExamenComboBox.getValue());
+        cuestionario.setPreguntas(preguntas);
+        cuestionario.setPuntajeTotal(puntajeTotal);
+
+        cuestionarioService.saveCuestionario(cuestionario);
+        Notification.show("Cuestionario guardado exitosamente.");
+
+        // Resetear el formulario después de guardar
+        resetFormulario();
+    }
+
+    private void resetFormulario() {
+        tituloField.clear();
+        tiempoExamenComboBox.clear();
+        cantidadPreguntasField.clear();
+        puntajeTotalComboBox.clear();
+        preguntasLayouts.clear();
+        removeAll();
+        add(tituloField, tiempoExamenComboBox, cantidadPreguntasField, puntajeTotalComboBox, generarPreguntasButton);
+    }
+
+    private class PreguntaLayout extends VerticalLayout {
+        private final TextField preguntaField;
+        private final ComboBox<TipoPregunta> tipoPreguntaComboBox;
+        private final TextArea opcionesField;
+        private final ComboBox<String> respuestaCorrectaComboBox;
+        private final ComboBox<Integer> puntajeField;
+        private final int puntajeTotal;
+
+        public PreguntaLayout(int numeroPregunta, int puntajePorPregunta, int puntajeTotal) {
+            this.puntajeTotal = puntajeTotal;
+            preguntaField = new TextField("Pregunta " + numeroPregunta);
+            tipoPreguntaComboBox = new ComboBox<>("Tipo de Pregunta", TipoPregunta.values());
+            opcionesField = new TextArea("Opciones (separadas por comas)");
+            respuestaCorrectaComboBox = new ComboBox<>("Respuesta Correcta");
+            puntajeField = new ComboBox<>("Puntaje");
+
+            if (puntajeTotal == 10) {
+                puntajeField.setItems(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+            } else if (puntajeTotal == 20) {
+                puntajeField.setItems(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
             }
 
-            if (preguntas.isEmpty()) {
-                Notification.show("Debe añadir al menos una pregunta", 3000, Notification.Position.MIDDLE);
-                return;
+            puntajeField.setValue(puntajePorPregunta);
+
+            tipoPreguntaComboBox.addValueChangeListener(event -> configurarOpciones());
+            opcionesField.addValueChangeListener(event -> actualizarOpcionesRespuestaCorrecta());
+
+            add(preguntaField, tipoPreguntaComboBox, opcionesField, respuestaCorrectaComboBox, puntajeField);
+        }
+
+        private void configurarOpciones() {
+            TipoPregunta tipoPregunta = tipoPreguntaComboBox.getValue();
+            if (tipoPregunta == TipoPregunta.VERDADERO_FALSO) {
+                opcionesField.setValue("Verdadero, Falso");
+                respuestaCorrectaComboBox.setItems("Verdadero", "Falso");
+            } else if (tipoPregunta == TipoPregunta.OPCION_MULTIPLE) {
+                actualizarOpcionesRespuestaCorrecta();
+            } else {
+                opcionesField.clear();
+                respuestaCorrectaComboBox.clear();
             }
+        }
 
-            Cuestionario cuestionario = new Cuestionario();
-            cuestionario.setTitulo(titulo);
-            cuestionario.setPreguntas(preguntas);
+        private void actualizarOpcionesRespuestaCorrecta() {
+            String[] opciones = opcionesField.getValue().split(",\\s*");
+            respuestaCorrectaComboBox.setItems(opciones);
+        }
 
-            cuestionarioService.saveCuestionario(cuestionario);
-            Notification.show("Cuestionario guardado exitosamente", 3000, Notification.Position.MIDDLE);
-
-            getUI().ifPresent(ui -> ui.navigate("gestor-cuestionario"));
-        });
-
-        HorizontalLayout buttonsLayout = new HorizontalLayout(verdaderoFalsoButton, opcionMultipleButton);
-        add(tituloField, preguntaField, verdaderoFalsoComboBox, opcionesField, respuestaCorrectaField, buttonsLayout, addPreguntaButton, saveCuestionarioButton);
+        public Pregunta getPregunta() {
+            Pregunta pregunta = new Pregunta();
+            pregunta.setTexto(preguntaField.getValue());
+            pregunta.setTipo(tipoPreguntaComboBox.getValue());
+            pregunta.setOpciones(Arrays.asList(opcionesField.getValue().split(",\\s*")));
+            pregunta.setRespuestaCorrecta(respuestaCorrectaComboBox.getValue());
+            pregunta.setPuntaje(puntajeField.getValue());
+            return pregunta;
+        }
     }
 }

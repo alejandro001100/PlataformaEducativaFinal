@@ -5,6 +5,7 @@ import com.proyecto.plataforma.data.CuestionarioLista;
 import com.proyecto.plataforma.data.Pregunta;
 import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -73,6 +74,8 @@ public class GestorCuestionarioView extends VerticalLayout {
             return div;
         })).setHeader("Respuestas Correctas");
 
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE); // Asegurarse de que está en modo de selección única
+
         Button editarPreguntaButton = new Button("Editar Pregunta", event -> {
             Cuestionario selectedCuestionario = grid.asSingleSelect().getValue();
             if (selectedCuestionario != null) {
@@ -82,7 +85,7 @@ public class GestorCuestionarioView extends VerticalLayout {
             }
         });
 
-        Button deleteButton = new Button("Eliminar Cuestionario Seleccionado", event -> {
+        Button deleteButton = new Button("Eliminar Cuestionario(s) Seleccionado(s)", event -> {
             Cuestionario selectedCuestionario = grid.asSingleSelect().getValue();
             if (selectedCuestionario != null) {
                 cuestionarioLista.eliminarCuestionario(selectedCuestionario);
@@ -107,7 +110,7 @@ public class GestorCuestionarioView extends VerticalLayout {
 
         List<TextField> preguntaFields = new ArrayList<>();
         List<TextArea> opcionesFields = new ArrayList<>();
-        List<TextField> respuestaCorrectaFields = new ArrayList<>();
+        List<ComboBox<String>> respuestaCorrectaFields = new ArrayList<>();
 
         for (int i = 0; i < cuestionario.getPreguntas().size(); i++) {
             Pregunta pregunta = cuestionario.getPreguntas().get(i);
@@ -122,9 +125,15 @@ public class GestorCuestionarioView extends VerticalLayout {
             opcionesField.setValue(String.join(", ", pregunta.getOpciones()));
             opcionesFields.add(opcionesField);
 
-            TextField respuestaCorrectaField = new TextField("Respuesta Correcta");
+            ComboBox<String> respuestaCorrectaField = new ComboBox<>("Respuesta Correcta");
+            respuestaCorrectaField.setItems(pregunta.getOpciones());
             respuestaCorrectaField.setValue(pregunta.getRespuestaCorrecta());
             respuestaCorrectaFields.add(respuestaCorrectaField);
+
+            opcionesField.addValueChangeListener(event -> {
+                String[] opciones = opcionesField.getValue().split(",\\s*");
+                respuestaCorrectaField.setItems(opciones);
+            });
 
             layout.add(preguntaLabel, preguntaField, opcionesField, respuestaCorrectaField);
         }

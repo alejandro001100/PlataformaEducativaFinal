@@ -1,8 +1,9 @@
 package com.proyecto.plataforma.views.gestorclases;
 
 import com.proyecto.plataforma.data.Cursos;
-import com.proyecto.plataforma.data.CursosLista; // Suponiendo que esta es tu clase de servicio para gestionar cursos
+import com.proyecto.plataforma.data.CursosLista;
 import com.proyecto.plataforma.views.MainLayout;
+import com.proyecto.plataforma.views.creadorcapituloscurso.CreadorCapitulosView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -11,14 +12,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 @Route(value = "gestor-clases", layout = MainLayout.class)
 @UIScope
@@ -26,14 +26,13 @@ import java.util.List;
 public class GestorClasesView extends VerticalLayout {
 
     private final CursosLista cursosLista;
-    // Servicio para manejar cursos
     private final Grid<Cursos> grid = new Grid<>(Cursos.class);
 
     @Autowired
     public GestorClasesView(CursosLista cursosLista) {
         this.cursosLista = cursosLista;
 
-        // Se ordenan los cursos en orden alfabético de acuerdo al título
+        // Ordenar los cursos en orden alfabético de acuerdo al título
         Collections.sort(cursosLista.getCursosLista());
 
         setSizeFull();
@@ -43,7 +42,7 @@ public class GestorClasesView extends VerticalLayout {
     }
 
     private void configureGrid() {
-        grid.setColumns("titulo", "descripcion", "area"); // Asegúrate de usar las propiedades correctas de la clase Cursos
+        grid.setColumns("titulo", "descripcion", "area");
         grid.getColumns().forEach(column -> column.setAutoWidth(true));
 
         grid.addComponentColumn(curso -> {
@@ -56,7 +55,7 @@ public class GestorClasesView extends VerticalLayout {
             Button button = new Button("Eliminar");
             button.addClickListener(event -> {
                 cursosLista.eliminarCursos(curso);
-                updateGrid(); // Actualiza la cuadrícula después de eliminar el curso
+                updateGrid();
             });
             return button;
         }).setHeader("Acción");
@@ -75,56 +74,35 @@ public class GestorClasesView extends VerticalLayout {
         TextField descripcionField = new TextField("Descripción");
         descripcionField.setValue(curso.getDescripcion() != null ? curso.getDescripcion() : "");
 
-        ComboBox comboArea = new ComboBox<>("Área");
+        ComboBox<String> comboArea = new ComboBox<>("Área");
         comboArea.setItems("Reciclaje desde casa", "Leyes en cuanto al reciclaje", "Impacto ambiental del reciclaje");
         comboArea.setValue(curso.getArea() != null ? curso.getArea() : "");
 
-        // Set the initial value of the combo box
-       /* SampleItem initialArea = comboArea.getDataProvider().fetch(new com.vaadin.flow.data.provider.Query<>())
-                .filter(item -> item.value().equals(curso.getArea()))
-                .findFirst()
-                .orElse(null);
-        comboArea.setValue(initialArea);*/
-
-        // Botones
         Button cerrarButton = new Button("Cerrar", event -> dialog.close());
         Button editarButton = new Button("Guardar cambios", event -> {
-            String nuevoTitulo = tituloField.getValue();
-            String nuevaDescripcion = descripcionField.getValue();
-            String nuevoArea = comboArea.getValue() != null ? (String) comboArea.getValue() : curso.getArea();
+            curso.setTitulo(tituloField.getValue());
+            curso.setDescripcion(descripcionField.getValue());
+            curso.setArea(comboArea.getValue());
 
-
-            cursosLista.eliminarCursos(curso);
-            // Actualizar el curso con los nuevos valores
-            curso.setTitulo(nuevoTitulo);
-            curso.setDescripcion(nuevaDescripcion);
-            curso.setArea(nuevoArea);
             cursosLista.guardarCursos(curso);
 
-
-            // Cierra la ventana emergente
             dialog.close();
-
-            // Actualiza el grid para reflejar los cambios
             updateGrid();
         });
         Button irButton = new Button("Añadir Capítulos", event -> {
-            // Aquí puedes añadir la lógica para añadir capítulos
+            VaadinSession.getCurrent().setAttribute("cursoId", curso.getId());
+            getUI().ifPresent(ui -> ui.navigate( CreadorCapitulosView.class));
         });
 
-        // Layouts para los botones y contenido
         HorizontalLayout buttonLayout = new HorizontalLayout(cerrarButton, editarButton, irButton);
         buttonLayout.setJustifyContentMode(JustifyContentMode.END);
 
         VerticalLayout contentLayout = new VerticalLayout(tituloField, descripcionField, comboArea, buttonLayout);
         contentLayout.setSpacing(true);
         contentLayout.setPadding(true);
-        contentLayout.setWidth("400px"); // Ajusta el ancho según tus necesidades
+        contentLayout.setWidth("400px");
 
         dialog.add(contentLayout);
         dialog.open();
     }
-
-
-
 }
