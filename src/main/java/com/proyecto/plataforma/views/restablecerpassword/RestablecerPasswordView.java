@@ -17,9 +17,9 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @PageTitle("Restablecer Password")
-@Route(value = "restablecer-password", layout = MainLayout.class)
+@Route(value = "restablecer-password")
 public class RestablecerPasswordView extends VerticalLayout {
-   private final EstudianteLista estudianteLista;
+    private final EstudianteLista estudianteLista;
     private final ProfesorLista profesorLista;
     private final AdminLista adminLista;
     private Estudiante estudianteActual;
@@ -137,3 +137,5 @@ public class RestablecerPasswordView extends VerticalLayout {
         add(new H3("Restablecer tu contraseña"), emailField, resetButton, newPasswordField, confirmNewPasswordField, changePasswordButton, backButton);
     }
 }
+//Final version
+

@@ -57,6 +57,9 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
         comboBoxArea.setWidth("min-content");
         setComboBoxSampleData(comboBoxArea);
 
+        textFieldTema.setLabel("Tema");
+        textFieldTema.setWidth("min-content");
+
         textAreaResumen.setLabel("Resumen");
         textAreaResumen.setWidth("100%");
 
@@ -72,24 +75,30 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
         layoutColumn2.add(h1);
         layoutColumn2.add(textFieldTitulo);
         layoutColumn2.add(comboBoxArea);
+        layoutColumn2.add(textFieldTema);
         layoutColumn2.add(textAreaResumen);
         layoutColumn2.add(buttonPrimary);
 
         buttonPrimary.addClickListener(e -> {
 
             String titulo = textFieldTitulo.getValue();
-            String area = comboBoxArea.getValue() != null ? comboBoxArea.getValue().label() : "Área no seleccionada";
+            String area = comboBoxArea.getValue() != null ? comboBoxArea.getValue().label() : "";
+            String tema = textFieldTema.getValue();
             String resumen = textAreaResumen.getValue();
+            Profesor currentUser = VaadinSession.getCurrent().getAttribute(Profesor.class);
 
-            if(cursosLista.isTituloRegistrado(titulo)) {
+            if (cursosLista.isTituloRegistrado(titulo)) {
                 Notification.show("El título del curso ya está registrado", 3000, Notification.Position.MIDDLE);
-                return;
-            } else if ( titulo.isEmpty () || area.isEmpty () || resumen.isEmpty () ) {
-                Notification.show("Llene todos los campos");
+            } else if (titulo.isEmpty() || area.isEmpty() || tema.isEmpty() || resumen.isEmpty()) {
+                Notification.show("Llene todos los campos", 3000, Notification.Position.MIDDLE);
+            } else if (currentUser == null) {
+                Notification.show("No se pudo encontrar el usuario actual", 3000, Notification.Position.MIDDLE);
             } else {
-                Cursos cursos = new Cursos(null, titulo, resumen, area);
+                Cursos cursos = new Cursos(null, titulo, resumen, area, tema, currentUser.getNombre());
                 cursosLista.guardarCursos(cursos);
-                Notification.show("Curso guardado con éxito!", 3000, Notification.Position.MIDDLE);
+                currentUser.addCursoCreado(cursos);
+                profesorLista.agregarProfesor(currentUser);  // Usamos ProfesorLista para guardar el profesor actualizado
+                Notification.show("Curso guardado con éxito", 3000, Notification.Position.MIDDLE);
                 getUI().ifPresent(ui -> ui.navigate(GestorClasesView.class));
             }
         });
@@ -107,3 +116,5 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
         comboBox.setItemLabelGenerator(SampleItem::label);
     }
 }
+//Final version
+

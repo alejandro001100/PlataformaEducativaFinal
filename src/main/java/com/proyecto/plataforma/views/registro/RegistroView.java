@@ -21,7 +21,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @PageTitle("Registro")
-@Route(value = "registro", layout = MainLayout.class)
+@Route(value = "registro")
 public class RegistroView extends VerticalLayout {
     /*
 
@@ -175,3 +175,5 @@ public class RegistroView extends VerticalLayout {
         add(title, subtitle, nombreField, apellidoField, emailField, passwordField, roleSelect, registerButton);
     }
 }
+//Final version
+

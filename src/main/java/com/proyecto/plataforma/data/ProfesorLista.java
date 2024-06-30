@@ -1,6 +1,5 @@
 package com.proyecto.plataforma.data;
 
-import com.proyecto.plataforma.services.EstudianteService;
 import com.proyecto.plataforma.services.ProfesorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,13 +9,14 @@ import java.util.List;
 
 @Component
 public class ProfesorLista {
-    List<Profesor> profesorLista;
+    private List<Profesor> profesorLista;
     private final ProfesorService profesorService;
 
     @Autowired
     public ProfesorLista(ProfesorService profesorService) {
         this.profesorService = profesorService;
-        profesorLista = new ArrayList<>();
+        this.profesorLista = new ArrayList<>();
+        cargarProfesor(); // Cargar profesores al inicializar
     }
 
     public List<Profesor> getProfesorLista() {
@@ -39,20 +39,22 @@ public class ProfesorLista {
 
     public void cargarProfesor() {
         List<Profesor> profesores = (List<Profesor>) profesorService.findAll();
+        profesorLista.clear();
         profesorLista.addAll(profesores);
     }
 
     public Profesor buscarProfesorCorreo(String correo) {
-        for (Profesor e : profesorLista) {
-            if (e.getCorreo().equals(correo)) {
-                return e;
+        for (Profesor p : profesorLista) {
+            if (p.getCorreo().equals(correo)) {
+                return p;
             }
         }
         return null;
     }
+
     public boolean isCorreoRegistrado(String correo) {
-        for (Profesor e : profesorLista) {
-            if (e.getCorreo().equals(correo)) {
+        for (Profesor p : profesorLista) {
+            if (p.getCorreo().equals(correo)) {
                 return true;
             }
         }
@@ -63,3 +65,5 @@ public class ProfesorLista {
         return profesorLista;
     }
 }
+//Final version
+

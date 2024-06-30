@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Route(value = "gestion-usuario", layout = MainLayout.class)
-
 public class GestionUsuarioView extends VerticalLayout {
 
     private final AdminService adminService;
@@ -59,18 +58,9 @@ public class GestionUsuarioView extends VerticalLayout {
         H3 h3 = new H3("Gestión de usuarios");
         h3.setWidth("max-content");
 
-        Button logoutButton = new Button("Cerrar sesión");
-        logoutButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        logoutButton.addClickListener(event -> {
-            VaadinSession.getCurrent().getSession().invalidate();
-            VaadinSession.getCurrent().close();
-            getUI().ifPresent(ui -> ui.navigate("login"));
-        });
-
-        layoutRow.add(h3, logoutButton);
+        layoutRow.add(h3);
         layoutRow.setFlexGrow(1, h3);
-        layoutRow.setFlexGrow(0, logoutButton);
-        layoutRow.setVerticalComponentAlignment(Alignment.END, logoutButton);
+        layoutRow.setVerticalComponentAlignment(Alignment.END, h3);
 
         grid = new Grid<>(User.class);
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
@@ -191,6 +181,6 @@ public class GestionUsuarioView extends VerticalLayout {
         dialog.add(dialogLayout);
         dialog.open();
     }
-
-
 }
+//Final version
+

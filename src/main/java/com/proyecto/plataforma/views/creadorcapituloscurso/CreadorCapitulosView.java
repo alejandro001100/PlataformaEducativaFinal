@@ -150,3 +150,5 @@ public class CreadorCapitulosView extends VerticalLayout {
         updateButton.setVisible(true);
     }
 }
+//Final version
+

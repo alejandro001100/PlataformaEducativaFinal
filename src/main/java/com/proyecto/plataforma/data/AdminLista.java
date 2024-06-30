@@ -18,6 +18,7 @@ public class AdminLista {
     public AdminLista(AdminService adminService) {
         this.adminService = adminService;
         adminLista = new ArrayList<>();
+        cargarAdmin();
     }
 
     public List<Admin> getAdminLista() {
@@ -65,3 +66,5 @@ public class AdminLista {
         return adminLista;
     }
 }
+//Final version
+

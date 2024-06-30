@@ -30,3 +30,5 @@ public class PreguntaLista {
         preguntaLista.remove(pregunta);
     }
 }
+//Final version
+

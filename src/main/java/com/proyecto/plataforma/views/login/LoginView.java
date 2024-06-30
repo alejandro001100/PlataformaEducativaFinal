@@ -1,9 +1,7 @@
 package com.proyecto.plataforma.views.login;
 
 import com.proyecto.plataforma.data.*;
-import com.proyecto.plataforma.services.AdminService;
-import com.proyecto.plataforma.services.ProfesorService;
-//import com.proyecto.plataforma.views.creadorcurso.CreadorCursoView;
+import com.proyecto.plataforma.views.alumnosviews.BuscarCursoVista;
 import com.proyecto.plataforma.views.creadorcurso.CreadorCursoView;
 import com.proyecto.plataforma.views.gestionusuario.GestionUsuarioView;
 import com.proyecto.plataforma.views.registro.RegistroView;
@@ -35,15 +33,15 @@ public class LoginView extends VerticalLayout {
     private final AdminLista adminLista;
 
     @Autowired
-    public LoginView(EstudianteLista estudianteLista, ProfesorLista profesorLista,AdminLista adminLista) {
+    public LoginView(EstudianteLista estudianteLista, ProfesorLista profesorLista, AdminLista adminLista) {
         this.estudianteLista = estudianteLista;
         this.profesorLista = profesorLista;
         this.adminLista = adminLista;
 
-
-        //Metodo para cargar los estudiantes desde MongoDB a la lista de estudiantes
+        // Método para cargar los estudiantes y profesores desde MongoDB
         estudianteLista.cargarEstudiantes();
         profesorLista.cargarProfesor();
+        adminLista.cargarAdmin();
 
         setWidth("100%");
         getStyle().set("flex-grow", "1");
@@ -67,35 +65,28 @@ public class LoginView extends VerticalLayout {
         loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         loginButton.getStyle().set("margin-top", "10px");
         loginButton.addClickListener(event -> {
-
-            //Saca lo que el usuario escribie en los campos de texto
             String correo = emailField.getValue();
             String contraseña = passwordField.getValue();
             Profesor profesor = profesorLista.buscarProfesorCorreo(correo);
             Estudiante estudiante = estudianteLista.buscarEstudianteCorreo(correo);
             Admin admin = adminLista.buscarAdminCorreo(correo);
 
-            //Se ejecuta si el usuario es un estudiante y la contraseña es correcta
-            if (estudiante != null && estudiante.getContraseña().equals(contraseña)) {
-                VaadinSession.getCurrent().setAttribute(User.class, estudiante);
-                Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
-                getUI().ifPresent(ui -> ui.navigate(GestionUsuarioView.class));
-            }
-            //Se ejecuta si el usuario es un profesor y la contraseña es correcta
-            else if (profesor != null && profesor.getContraseña().equals(contraseña)) {
+            if (profesor != null && profesor.getContraseña().equals(contraseña)) {
                 VaadinSession.getCurrent().setAttribute(User.class, profesor);
+                VaadinSession.getCurrent().setAttribute(Profesor.class, profesor);
                 Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
                 getUI().ifPresent(ui -> ui.navigate(CreadorCursoView.class));
-            }
-            //Se ejecuta si el usuario es un admin y la contraseña es correcta
-            else if (admin !=null && admin.getContraseña().equals(contraseña)){
+            } else if (estudiante != null && estudiante.getContraseña().equals(contraseña)) {
+                VaadinSession.getCurrent().setAttribute(User.class, estudiante);
+                VaadinSession.getCurrent().setAttribute(Estudiante.class, estudiante);
+                Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
+                getUI().ifPresent(ui -> ui.navigate(BuscarCursoVista.class));
+            } else if (admin != null && admin.getContraseña().equals(contraseña)) {
                 VaadinSession.getCurrent().setAttribute(User.class, admin);
+                VaadinSession.getCurrent().setAttribute(Admin.class, admin);
                 Notification.show("Inicio de sesión exitoso!", 3000, Notification.Position.MIDDLE);
                 getUI().ifPresent(ui -> ui.navigate(GestionUsuarioView.class));
-
-            }
-            //Se ejecuta si el usuario no existe o la contraseña es incorrecta
-            else {
+            } else {
                 Notification.show("Correo o contraseña incorrectos.", 3000, Notification.Position.MIDDLE);
             }
         });
@@ -116,3 +107,5 @@ public class LoginView extends VerticalLayout {
         add(title, subtitle, emailField, passwordField, forgotPasswordLink, actions, registerLayout);
     }
 }
+//Final version
+

@@ -7,6 +7,7 @@ import com.proyecto.plataforma.views.gestionusuario.GestionUsuarioView;
 import com.proyecto.plataforma.views.gestorclases.GestorClasesView;
 import com.proyecto.plataforma.views.gestorcuestionario.GestorCuestionarioView;
 import com.proyecto.plataforma.views.login.LoginView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -16,9 +17,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.server.WrappedSession;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 
-public class MainLayout extends AppLayout {
+public class MainLayout extends AppLayout implements BeforeEnterObserver {
 
     public MainLayout() {
         createHeader();
@@ -30,12 +32,9 @@ public class MainLayout extends AppLayout {
         logo.addClassNames("text-l", "m-m");
 
         Button logoutButton = new Button("Cerrar sesión", e -> {
-            // Invalidar la sesión
-            WrappedSession session = VaadinSession.getCurrent().getSession();
-            session.invalidate();
-
-            // Redirigir a la página de inicio de sesión
-            getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+            VaadinSession.getCurrent().getSession().invalidate();
+            VaadinSession.getCurrent().close();
+            UI.getCurrent().navigate(LoginView.class);
         });
 
         HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, logoutButton);
@@ -55,7 +54,6 @@ public class MainLayout extends AppLayout {
                 ));
             } else if ("Profesor".equals(user.getRol())) {
                 addToDrawer(new VerticalLayout(
-                        new RouterLink("Gestión de Usuarios", GestionUsuarioView.class),
                         new RouterLink("Crear Cuestionario", CreadorCuestionarioView.class),
                         new RouterLink("Gestor Clases", GestorClasesView.class),
                         new RouterLink("Creador Cursos", CreadorCursoView.class),
@@ -63,11 +61,20 @@ public class MainLayout extends AppLayout {
                 ));
             } else if ("Estudiante".equals(user.getRol())) {
                 addToDrawer(new VerticalLayout(
-                        new RouterLink("Cursos", CreadorCursoView.class)
+                        new RouterLink("Buscar Cursos", BuscarCursoVista.class),
+                        new RouterLink("Cursos tomados", CursosTomadosVista.class),
+                        new RouterLink("Ver mis notas", VerMisNotasVista.class)
                 ));
             }
-        } else {
-            getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+        }
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        if (VaadinSession.getCurrent().getAttribute(User.class) == null) {
+            event.rerouteTo(LoginView.class);
         }
     }
 }
+//Final version
+
