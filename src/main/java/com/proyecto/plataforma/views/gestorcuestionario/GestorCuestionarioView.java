@@ -25,6 +25,7 @@ import java.util.List;
 @Route(value = "gestor-cuestionario", layout = MainLayout.class)
 public class GestorCuestionarioView extends VerticalLayout {
 
+
     private final CuestionarioLista cuestionarioLista;
     private final Grid<Cuestionario> grid;
 
@@ -41,6 +42,8 @@ public class GestorCuestionarioView extends VerticalLayout {
 
         grid.addColumn(Cuestionario::getTitulo).setHeader("Título");
         grid.addColumn(cuestionario -> cuestionario.getPreguntas().size()).setHeader("Número de Preguntas");
+        // Agregar columna para mostrar el número de intentos
+        grid.addColumn(Cuestionario::getIntentos).setHeader("Número de Intentos");
 
         grid.addColumn(new ComponentRenderer<>(cuestionario -> {
             Div div = new Div();
@@ -73,6 +76,8 @@ public class GestorCuestionarioView extends VerticalLayout {
             }
             return div;
         })).setHeader("Respuestas Correctas");
+
+
 
         grid.setSelectionMode(Grid.SelectionMode.SINGLE); // Asegurarse de que está en modo de selección única
 
@@ -159,6 +164,8 @@ public class GestorCuestionarioView extends VerticalLayout {
         dialog.add(layout);
         dialog.open();
     }
+
 }
 //Final version
+
 

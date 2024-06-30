@@ -2,8 +2,10 @@ package com.proyecto.plataforma.views.creadorcuestionario;
 
 import com.proyecto.plataforma.data.Cuestionario;
 import com.proyecto.plataforma.data.Pregunta;
+import com.proyecto.plataforma.data.Profesor;
 import com.proyecto.plataforma.data.TipoPregunta;
 import com.proyecto.plataforma.services.CuestionarioService;
+import com.proyecto.plataforma.services.ProfesorService;
 import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -12,6 +14,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -22,43 +25,50 @@ import java.util.List;
 public class CreadorCuestionarioView extends VerticalLayout {
 
     private final CuestionarioService cuestionarioService;
+    private final ProfesorService profesorService;
     private final TextField tituloField;
     private final ComboBox<Integer> tiempoExamenComboBox;
     private final TextField cantidadPreguntasField;
     private final ComboBox<Integer> puntajeTotalComboBox;
+    private final ComboBox<Integer> intentosComboBox;
     private final Button generarPreguntasButton;
     private final List<PreguntaLayout> preguntasLayouts = new ArrayList<>();
 
     @Autowired
-    public CreadorCuestionarioView(CuestionarioService cuestionarioService) {
+    public CreadorCuestionarioView(CuestionarioService cuestionarioService, ProfesorService profesorService) {
         this.cuestionarioService = cuestionarioService;
+        this.profesorService = profesorService;
         this.tituloField = new TextField("Título del Cuestionario");
         this.tiempoExamenComboBox = new ComboBox<>("Tiempo del Examen (minutos)");
         this.cantidadPreguntasField = new TextField("Cantidad de Preguntas");
         this.puntajeTotalComboBox = new ComboBox<>("Puntaje Total del Examen");
+        this.intentosComboBox = new ComboBox<>("Intentos del Examen");
         this.generarPreguntasButton = new Button("Generar Preguntas");
 
         tiempoExamenComboBox.setItems(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60);
         puntajeTotalComboBox.setItems(10, 20);
+        intentosComboBox.setItems(1, 2, 3);
 
         generarPreguntasButton.addClickListener(event -> generarPreguntas());
 
-        add(tituloField, tiempoExamenComboBox, cantidadPreguntasField, puntajeTotalComboBox, generarPreguntasButton);
+        add(tituloField, tiempoExamenComboBox, cantidadPreguntasField, puntajeTotalComboBox, intentosComboBox, generarPreguntasButton);
     }
 
     private void generarPreguntas() {
         preguntasLayouts.clear();
         removeAll();
-        add(tituloField, tiempoExamenComboBox, cantidadPreguntasField, puntajeTotalComboBox, generarPreguntasButton);
+        add(tituloField, tiempoExamenComboBox, cantidadPreguntasField, puntajeTotalComboBox, intentosComboBox, generarPreguntasButton);
 
         int cantidadPreguntas;
         int puntajeTotal;
+        int intentos;
 
         try {
             cantidadPreguntas = Integer.parseInt(cantidadPreguntasField.getValue());
             puntajeTotal = puntajeTotalComboBox.getValue();
+            intentos = intentosComboBox.getValue();
         } catch (NumberFormatException | NullPointerException e) {
-            Notification.show("Ingrese valores válidos para la cantidad de preguntas y el puntaje total");
+            Notification.show("Ingrese valores válidos para la cantidad de preguntas, el puntaje total y el número de intentos");
             return;
         }
 
@@ -94,11 +104,17 @@ public class CreadorCuestionarioView extends VerticalLayout {
         cuestionario.setTiempoExamen(tiempoExamenComboBox.getValue());
         cuestionario.setPreguntas(preguntas);
         cuestionario.setPuntajeTotal(puntajeTotal);
+        cuestionario.setIntentos(intentosComboBox.getValue());
 
         cuestionarioService.saveCuestionario(cuestionario);
-        Notification.show("Cuestionario guardado exitosamente.");
 
-        // Resetear el formulario después de guardar
+        Profesor currentUser = VaadinSession.getCurrent().getAttribute(Profesor.class);
+        if (currentUser != null) {
+            currentUser.addCuestionarioCreado(cuestionario);
+            profesorService.saveProfesor(currentUser);
+        }
+
+        Notification.show("Cuestionario guardado exitosamente.");
         resetFormulario();
     }
 
@@ -107,9 +123,10 @@ public class CreadorCuestionarioView extends VerticalLayout {
         tiempoExamenComboBox.clear();
         cantidadPreguntasField.clear();
         puntajeTotalComboBox.clear();
+        intentosComboBox.clear();
         preguntasLayouts.clear();
         removeAll();
-        add(tituloField, tiempoExamenComboBox, cantidadPreguntasField, puntajeTotalComboBox, generarPreguntasButton);
+        add(tituloField, tiempoExamenComboBox, cantidadPreguntasField, puntajeTotalComboBox, intentosComboBox, generarPreguntasButton);
     }
 
     private class PreguntaLayout extends VerticalLayout {

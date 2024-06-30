@@ -1,23 +1,24 @@
 package com.proyecto.plataforma.data;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.ArrayList;
+import java.util.List;
 
-@Document(collection = "profesor")
-public class Profesor extends User{
-    @Id
+public class Profesor extends User {
     private String id;
-
-
+    private List<Cursos> cursosCreados;
+    private List<Cuestionario> cuestionariosCreados;
 
     public Profesor(String nombre, String apellido, String correo, String contraseña, String rol, String id) {
         super(nombre, apellido, correo, contraseña, rol);
-
         this.id = id;
+        this.cursosCreados = new ArrayList<>();
+        this.cuestionariosCreados = new ArrayList<>();
     }
 
     public Profesor() {
         super();
+        this.cursosCreados = new ArrayList<>();
+        this.cuestionariosCreados = new ArrayList<>();
     }
 
     public String getId() {
@@ -28,6 +29,29 @@ public class Profesor extends User{
         this.id = id;
     }
 
+    public List<Cursos> getCursosCreados() {
+        return cursosCreados;
+    }
+
+    public void setCursosCreados(List<Cursos> cursosCreados) {
+        this.cursosCreados = cursosCreados;
+    }
+
+    public void addCursoCreado(Cursos curso) {
+        this.cursosCreados.add(curso);
+    }
+
+    public List<Cuestionario> getCuestionariosCreados() {
+        return cuestionariosCreados;
+    }
+
+    public void setCuestionariosCreados(List<Cuestionario> cuestionariosCreados) {
+        this.cuestionariosCreados = cuestionariosCreados;
+    }
+
+    public void addCuestionarioCreado(Cuestionario cuestionario) {
+        this.cuestionariosCreados.add(cuestionario);
+    }
 }
 //Final version
 

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 @Component
 public class CursosLista {
@@ -15,7 +17,8 @@ public class CursosLista {
     @Autowired
     public CursosLista(CursosService cursosService) {
         this.cursosService = cursosService;
-        cursosLista = new ArrayList<>();
+        this.cursosLista = new ArrayList<>();
+        cargarCursos(); // Asegúrate de cargar los cursos al iniciar
     }
 
     public List<Cursos> getCursosLista() {
@@ -35,13 +38,19 @@ public class CursosLista {
 
     public void eliminarCursos(Cursos cursos) {
         cursosLista.remove(cursos);
-        cursosService.delete(cursos);
+        cursosService.eliminar(cursos);
     }
 
     public void cargarCursos() {
-        List<Cursos> cursos = (List<Cursos>) cursosService.findAll();
+        List<Cursos> cursos = (List<Cursos>) cursosService.encontrarTodos();
         cursosLista.clear();
         cursosLista.addAll(cursos);
+
+        // Actualizar PriorityQueue de capítulos para cada curso
+        cursosLista.forEach(curso -> {
+            PriorityQueue<Capitulo> priorityQueue = new PriorityQueue<>(curso.getCapitulos());
+            curso.setCapitulos(priorityQueue);
+        });
     }
 
     public Cursos buscarCursosTitulo(String titulo) {
@@ -63,13 +72,32 @@ public class CursosLista {
     }
 
     public List<Cursos> getCursosPorArea(String area) {
-        List<Cursos> cursosPorArea = new ArrayList<>();
-        for (Cursos c : cursosLista) {
-            if (c.getArea().equals(area)) {
-                cursosPorArea.add(c);
-            }
-        }
-        return cursosPorArea;
+        return cursosLista.stream()
+                .filter(c -> c.getArea().equalsIgnoreCase(area))
+                .collect(Collectors.toList());
+    }
+
+    public List<Cursos> buscarCursosPorTituloOArea(String filtro) {
+        return cursosLista.stream()
+                .filter(c -> c.getTitulo().toLowerCase().contains(filtro.toLowerCase()) ||
+                        c.getArea().toLowerCase().contains(filtro.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Cursos> buscarCursosPorTemayProfesor(String tema, String profesor) {
+        return cursosService.buscarPorTemaYProfesor(tema, profesor);
+    }
+
+    public List<Cursos> buscarCursosPorTema(String tema) {
+        return cursosService.buscarPorTema(tema);
+    }
+
+    public List<Cursos> buscarPorProfesor(String profesor) {
+        return cursosService.buscarPorProfesor(profesor);
+    }
+
+    public List<Cursos> encontrarTodos() {
+        return (List<Cursos>) cursosService.encontrarTodos();
     }
 }
 //Final version

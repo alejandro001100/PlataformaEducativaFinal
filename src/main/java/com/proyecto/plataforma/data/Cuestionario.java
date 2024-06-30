@@ -13,6 +13,8 @@ public class Cuestionario {
     private List<Pregunta> preguntas;
     private int puntajeTotal;
     private int tiempoExamen; // en minutos
+    private int intentos; // en minutos
+    private String capituloId; // Añadir esta propiedad
 
     // Getters y Setters
     public String getId() {
@@ -53,6 +55,22 @@ public class Cuestionario {
 
     public void setTiempoExamen(int tiempoExamen) {
         this.tiempoExamen = tiempoExamen;
+    }
+
+    public int getIntentos() {
+        return intentos;
+    }
+
+    public void setIntentos(int intentos) {
+        this.intentos = intentos;
+    }
+
+    public String getCapituloId() {
+        return capituloId;
+    }
+
+    public void setCapituloId(String capituloId) {
+        this.capituloId = capituloId;
     }
 }
 //Final version

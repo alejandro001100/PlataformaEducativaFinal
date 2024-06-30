@@ -1,9 +1,11 @@
 package com.proyecto.plataforma.services;
 
+import com.proyecto.plataforma.data.Cursos;
 import com.proyecto.plataforma.data.Profesor;
 import com.proyecto.plataforma.repository.ProfesorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 @Service
 public class ProfesorService {
     @Autowired
@@ -29,6 +31,14 @@ public class ProfesorService {
         profesorRepository.delete(profesor);
     }
 
+    public Profesor guardarCursoCreado(String correoProfesor, Cursos curso) {
+        Profesor profesor = profesorRepository.findByCorreo(correoProfesor);
+        if (profesor != null) {
+            profesor.addCursoCreado(curso);
+            return profesorRepository.save(profesor);
+        }
+        return null;
+    }
 }
 //Final version
 

@@ -2,6 +2,8 @@ package com.proyecto.plataforma.views.creadorcurso;
 
 import com.proyecto.plataforma.data.Cursos;
 import com.proyecto.plataforma.data.CursosLista;
+import com.proyecto.plataforma.data.Profesor;
+import com.proyecto.plataforma.data.ProfesorLista;
 import com.proyecto.plataforma.views.MainLayout;
 import com.proyecto.plataforma.views.gestorclases.GestorClasesView;
 import com.vaadin.flow.component.Composite;
@@ -17,7 +19,10 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +31,12 @@ import java.util.List;
 public class CreadorCursoView extends Composite<VerticalLayout> {
 
     private final CursosLista cursosLista;
+    private final ProfesorLista profesorLista;
 
-    public CreadorCursoView(CursosLista cursosLista) {
+    @Autowired
+    public CreadorCursoView(CursosLista cursosLista, ProfesorLista profesorLista) {
         this.cursosLista = cursosLista;
+        this.profesorLista = profesorLista;
         cursosLista.cargarCursos();
 
         HorizontalLayout layoutRow = new HorizontalLayout();
@@ -36,6 +44,7 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
         H1 h1 = new H1();
         TextField textFieldTitulo = new TextField();
         ComboBox<SampleItem> comboBoxArea = new ComboBox<>();
+        TextField textFieldTema = new TextField(); // Campo de texto para el tema
         TextArea textAreaResumen = new TextArea();
         Button buttonPrimary = new Button();
 

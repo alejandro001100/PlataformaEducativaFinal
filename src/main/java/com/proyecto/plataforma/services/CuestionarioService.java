@@ -25,8 +25,36 @@ public class CuestionarioService {
         cuestionarioRepository.delete(cuestionario);
     }
 
-    public Cuestionario findById(String id) {
-        return cuestionarioRepository.findById(id).orElse(null);
+    public Optional<Cuestionario> findById(String id) {
+        return cuestionarioRepository.findById(id);
+    }
+
+    public Optional<Cuestionario> buscarPorCapituloId(String capituloId) {
+        return Optional.ofNullable(cuestionarioRepository.findByCapituloId(capituloId));
+    }
+
+    public List<Cuestionario> buscarPorTitulo(String titulo) {
+        return cuestionarioRepository.findByTituloContaining(titulo);
+    }
+
+    public Cuestionario actualizarCuestionario(Cuestionario cuestionario) {
+        Optional<Cuestionario> existenteOpt = findById(cuestionario.getId());
+        if (existenteOpt.isPresent()) {
+            Cuestionario existente = existenteOpt.get();
+            existente.setTitulo(cuestionario.getTitulo());
+            existente.setPreguntas(cuestionario.getPreguntas());
+            existente.setPuntajeTotal(cuestionario.getPuntajeTotal());
+            existente.setTiempoExamen(cuestionario.getTiempoExamen());
+            existente.setIntentos(cuestionario.getIntentos());
+            return saveCuestionario(existente);
+        } else {
+            return null;
+        }
+    }
+
+    public List<Cuestionario> buscarPorTiempoExamen(int minTiempo, int maxTiempo) {
+        return cuestionarioRepository.findByTiempoExamenBetween(minTiempo, maxTiempo);
     }
 }
+//Final version
 

@@ -1,29 +1,40 @@
 package com.proyecto.plataforma.data;
 
-import com.vaadin.flow.component.template.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 @Document(collection = "cursos")
-public class Cursos implements Comparable<Cursos> {
+public class Cursos {
     @Id
     private String id;
     private String titulo;
     private String descripcion;
     private String area;
-    private List<Capitulo> capitulos; // Añadir lista de capítulos
+    private String tema;
+    private String profesor;
+    private PriorityQueue<Capitulo> capitulos;
 
-    public Cursos(String id, String titulo, String descripcion, String area) {
+    @DBRef
+    private List<Estudiante> alumnosRegistrados;
+
+    public Cursos(String id, String titulo, String descripcion, String area, String tema, String profesor) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.area = area;
-        this.capitulos = new ArrayList<>(); // Inicializar lista de capítulos
+        this.tema = tema;
+        this.profesor = profesor;
+        this.capitulos = new PriorityQueue<>();
+        this.alumnosRegistrados = new ArrayList<>();
     }
 
     // Getters y setters
+
     public String getId() {
         return id;
     }
@@ -56,17 +67,40 @@ public class Cursos implements Comparable<Cursos> {
         this.area = area;
     }
 
-    public List<Capitulo> getCapitulos() {
+    public String getTema() {
+        return tema;
+    }
+
+    public void setTema(String tema) {
+        this.tema = tema;
+    }
+
+    public String getProfesor() {
+        return profesor;
+    }
+
+    public void setProfesor(String profesor) {
+        this.profesor = profesor;
+    }
+
+    public PriorityQueue<Capitulo> getCapitulos() {
         return capitulos;
     }
 
-    public void setCapitulos(List<Capitulo> capitulos) {
+    public void setCapitulos(PriorityQueue<Capitulo> capitulos) {
         this.capitulos = capitulos;
     }
 
-    @Override
-    public int compareTo(Cursos o) {
-        return this.titulo.compareToIgnoreCase(o.getTitulo());
+    public List<Estudiante> getAlumnosRegistrados() {
+        return alumnosRegistrados;
+    }
+
+    public void setAlumnosRegistrados(List<Estudiante> alumnosRegistrados) {
+        this.alumnosRegistrados = alumnosRegistrados;
+    }
+
+    public void agregarAlumnoRegistrado(Estudiante alumno) {
+        this.alumnosRegistrados.add(alumno);
     }
 }
 //Final version

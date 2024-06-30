@@ -1,11 +1,12 @@
 package com.proyecto.plataforma.services;
 
+import com.proyecto.plataforma.data.Cursos;
 import com.proyecto.plataforma.data.Estudiante;
 import com.proyecto.plataforma.repository.EstudianteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.List;
 
 @Service
 public class EstudianteService {
@@ -24,18 +25,27 @@ public class EstudianteService {
         return estudianteRepository.findByCorreo(correo) != null;
     }
 
-
     public Iterable<Estudiante> findAll() {
         return estudianteRepository.findAll();
     }
-   /* public Estudiante save(Estudiante estudiante) {
-        return estudianteRepository.save(estudiante);
-    }*/
 
     public void delete(Estudiante estudiante) {
         estudianteRepository.delete(estudiante);
     }
 
+    public Estudiante agregarCursoTomado(String correoEstudiante, Cursos curso) {
+        Estudiante estudiante = estudianteRepository.findByCorreo(correoEstudiante);
+        if (estudiante != null) {
+            estudiante.agregarCursoTomado(curso);
+            return estudianteRepository.save(estudiante);
+        }
+        return null;
+    }
+
+    // Método para obtener estudiantes por curso
+    public List<Estudiante> getAlumnosPorCurso(String cursoId) {
+        return estudianteRepository.findByCursoId(cursoId);
+    }
 }
 //Final version
 

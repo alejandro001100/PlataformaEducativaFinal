@@ -1,6 +1,9 @@
 package com.proyecto.plataforma.views;
 
 import com.proyecto.plataforma.data.User;
+import com.proyecto.plataforma.views.alumnosviews.BuscarCursoVista;
+import com.proyecto.plataforma.views.alumnosviews.CursosTomadosVista;
+import com.proyecto.plataforma.views.alumnosviews.VerMisNotasVista;
 import com.proyecto.plataforma.views.creadorcuestionario.CreadorCuestionarioView;
 import com.proyecto.plataforma.views.creadorcurso.CreadorCursoView;
 import com.proyecto.plataforma.views.gestionusuario.GestionUsuarioView;
