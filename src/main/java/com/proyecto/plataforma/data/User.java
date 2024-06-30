@@ -44,14 +44,6 @@ public class User {
         this.apellido = apellido;
     }
 
-    /*public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }*/
-
     public String getCorreo() {
         return correo;
     }
