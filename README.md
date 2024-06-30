@@ -3,7 +3,8 @@
 ## Descripción del Proyecto
 
 Este proyecto es una **Plataforma Educativa** diseñada para facilitar la gestión de cursos, estudiantes, cuestionarios y profesores. La plataforma permite a los estudiantes inscribirse en cursos, visualizar los detalles de los capítulos de cada curso, realizar cuestionarios y ver sus notas. Los profesores pueden crear cursos y capítulos, gestionar estudiantes inscritos y visualizar sus notas.
-##Integrantes Grupo:
+
+## Integrantes Grupo:
 
 Alejandro Paqui, Naomi Lizano, Camila Torres , Sahian Davila Luis Tayupanta
 ## Tecnologías Utilizadas
