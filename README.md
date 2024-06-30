@@ -1,45 +1,57 @@
-# Proyecto Plataforma Aprendizaje
+# Plataforma Educativa
 
-This project can be used as a starting point to create your own Vaadin application with Spring Boot.
-It contains all the necessary configuration and some placeholder files to get you started.
+## Descripción del Proyecto
 
-## Running the application
+Este proyecto es una **Plataforma Educativa** diseñada para facilitar la gestión de cursos, estudiantes, cuestionarios y profesores. La plataforma permite a los estudiantes inscribirse en cursos, visualizar los detalles de los capítulos de cada curso, realizar cuestionarios y ver sus notas. Los profesores pueden crear cursos y capítulos, gestionar estudiantes inscritos y visualizar sus notas.
+##Integrantes Grupo:
 
-The project is a standard Maven project. To run it from the command line,
-type `mvnw` (Windows), or `./mvnw` (Mac & Linux), then open
-http://localhost:8080 in your browser.
+Alejandro Paqui, Naomi Lizano, Camila Torres , Sahian Davila Luis Tayupanta
+## Tecnologías Utilizadas
 
-You can also import the project to your IDE of choice as you would with any
-Maven project. Read more on [how to import Vaadin projects to different IDEs](https://vaadin.com/docs/latest/guide/step-by-step/importing) (Eclipse, IntelliJ IDEA, NetBeans, and VS Code).
+- **Java**
+- **Vaadin**: Framework para la construcción de interfaces de usuario modernas basadas en web.
+- **Spring Boot**: Framework para la creación de aplicaciones Java.
+- **MongoDB**: Base de datos NoSQL utilizada para el almacenamiento de datos.
+- **Maven**: Herramienta de gestión y construcción de proyectos.
 
-## Deploying to Production
+## Características Principales
 
-To create a production build, call `mvnw clean package -Pproduction` (Windows),
-or `./mvnw clean package -Pproduction` (Mac & Linux).
-This will build a JAR file with all the dependencies and front-end resources,
-ready to be deployed. The file can be found in the `target` folder after the build completes.
+### Para Estudiantes
 
-Once the JAR file is built, you can run it using
-`java -jar target/proyectoplataformaaprendizaje-1.0-SNAPSHOT.jar`
+- **Inscripción en Cursos**: Los estudiantes pueden buscar e inscribirse en cursos disponibles.
+- **Visualización de Cursos Tomados**: Los estudiantes pueden ver una lista de los cursos en los que están inscritos.
+- **Realización de Cuestionarios**: Cada capítulo de un curso puede tener un cuestionario asociado que los estudiantes deben completar.
+- **Visualización de Notas**: Los estudiantes pueden ver sus notas obtenidas en los cuestionarios.
 
-## Project structure
+### Para Profesores
 
-- `MainLayout.java` in `src/main/java` contains the navigation setup (i.e., the
-  side/top bar and the main menu). This setup uses
-  [App Layout](https://vaadin.com/docs/components/app-layout).
-- `views` package in `src/main/java` contains the server-side Java views of your application.
-- `views` folder in `src/main/frontend` contains the client-side JavaScript views of your application.
-- `themes` folder in `src/main/frontend` contains the custom CSS styles.
+- **Gestión de Cursos**: Los profesores pueden crear, editar y eliminar cursos.
+- **Gestión de Capítulos**: Cada curso puede tener múltiples capítulos, los cuales pueden ser gestionados por el profesor.
+- **Visualización de Estudiantes Inscritos**: Los profesores pueden ver la lista de estudiantes inscritos en sus cursos y las notas obtenidas por ellos en los cuestionarios.
 
-## Useful links
+## Uso de Listas para la Capa de Negocio
 
-- Read the documentation at [vaadin.com/docs](https://vaadin.com/docs).
-- Follow the tutorial at [vaadin.com/docs/latest/tutorial/overview](https://vaadin.com/docs/latest/tutorial/overview).
-- Create new projects at [start.vaadin.com](https://start.vaadin.com/).
-- Search UI components and their usage examples at [vaadin.com/docs/latest/components](https://vaadin.com/docs/latest/components).
-- View use case applications that demonstrate Vaadin capabilities at [vaadin.com/examples-and-demos](https://vaadin.com/examples-and-demos).
-- Build any UI without custom CSS by discovering Vaadin's set of [CSS utility classes](https://vaadin.com/docs/styling/lumo/utility-classes). 
-- Find a collection of solutions to common use cases at [cookbook.vaadin.com](https://cookbook.vaadin.com/).
-- Find add-ons at [vaadin.com/directory](https://vaadin.com/directory).
-- Ask questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/vaadin) or join our [Discord channel](https://discord.gg/MYFq5RTbBn).
-- Report issues, create pull requests in [GitHub](https://github.com/vaadin).
+Para mantener la integridad y eficiencia de la aplicación, utilizamos listas como capa de negocio para la gestión de datos. Las listas permiten un manejo dinámico y flexible de los datos, lo cual es crucial para las operaciones frecuentes de lectura y escritura en la plataforma.
+
+### Ventajas del Uso de Listas
+
+- **Eficiencia**: Las listas proporcionan una forma rápida y eficiente de gestionar colecciones de datos.
+- **Flexibilidad**: Facilita la adición, eliminación y actualización de elementos sin necesidad de redefinir la estructura de datos.
+- **Integración**: Permite una fácil integración con otros componentes del sistema, asegurando que los datos se mantengan sincronizados.
+
+
+## Instalación y Configuración
+
+### Prerrequisitos
+
+- **Java 11** o superior
+- **Maven**: Para la construcción y gestión del proyecto.
+- **MongoDB**: Base de datos NoSQL.
+
+### Instrucciones
+
+1. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/alejandro001100/PlataformaEducativaFinal.git
+   cd PlataformaEducativaFinal
+
