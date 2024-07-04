@@ -146,7 +146,7 @@ public class CuestionarioVista extends VerticalLayout implements HasUrlParameter
         if (estudiante != null) {
             NotaCuestionario notaCuestionario = estudiante.getNotaCuestionario(cuestionario.getTitulo());
             if (notaCuestionario == null) {
-                notaCuestionario = new NotaCuestionario(cuestionario, nota, 1);
+                notaCuestionario = new NotaCuestionario(cuestionario.getTitulo(), nota, 1);
             } else {
                 notaCuestionario.setNota(nota);
                 notaCuestionario.setIntentos(notaCuestionario.getIntentos() + 1);
@@ -187,3 +187,5 @@ public class CuestionarioVista extends VerticalLayout implements HasUrlParameter
         return String.format("%02d:%02d", minutos, segundos);
     }
 }
+//Final version
+
