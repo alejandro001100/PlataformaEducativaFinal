@@ -111,6 +111,7 @@ public class CreadorCuestionarioView extends VerticalLayout {
         Profesor currentUser = VaadinSession.getCurrent().getAttribute(Profesor.class);
         if (currentUser != null) {
             currentUser.addCuestionarioCreado(cuestionario);
+            
             profesorService.saveProfesor(currentUser);
         }
 

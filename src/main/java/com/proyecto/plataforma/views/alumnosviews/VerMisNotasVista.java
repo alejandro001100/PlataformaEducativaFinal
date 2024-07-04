@@ -12,7 +12,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import org.springframework.beans.factory.annotation.Autowired;
-
 @Route(value = "ver-notas", layout = MainLayout.class)
 @PageTitle("Mis Notas | Plataforma Educativa")
 public class VerMisNotasVista extends VerticalLayout {
@@ -55,4 +54,5 @@ public class VerMisNotasVista extends VerticalLayout {
     }
 }
 //Final version
+
 

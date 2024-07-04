@@ -45,6 +45,15 @@ public class Profesor extends User {
         return cuestionariosCreados;
     }
 
+    public Cursos buscarCurso(String idCurso) {
+        for (Cursos curso : cursosCreados) {
+            if (curso.getId().equals(idCurso)) {
+                return curso;
+            }
+        }
+        return null;
+    }
+
     public void setCuestionariosCreados(List<Cuestionario> cuestionariosCreados) {
         this.cuestionariosCreados = cuestionariosCreados;
     }

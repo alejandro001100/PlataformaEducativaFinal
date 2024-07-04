@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "capitulos")
 public class Capitulo implements Comparable<Capitulo> {
     @Id
@@ -67,6 +69,7 @@ public class Capitulo implements Comparable<Capitulo> {
     public void setCuestionario(Cuestionario cuestionario) {
         this.cuestionario = cuestionario;
     }
+
 
     @Override
     public int compareTo(Capitulo o) {

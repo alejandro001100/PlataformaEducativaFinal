@@ -140,7 +140,7 @@ public class GestorClasesView extends VerticalLayout {
         alumnosGrid.addColumn(estudiante -> {
             StringBuilder notas = new StringBuilder();
             for (NotaCuestionario nota : estudiante.getNotasCuestionarios()) {
-                notas.append(nota.getTituloCuestionario()).append(": ").append(nota.getNota()).append("\n");
+                notas.append(nota.getTitulo()).append(": ").append(nota.getNota()).append("\n");
             }
             return notas.toString();
         }).setHeader("Notas de Cuestionarios");

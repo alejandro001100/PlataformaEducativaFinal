@@ -3,6 +3,8 @@ package com.proyecto.plataforma.capaNegocio;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "notas_cuestionario")
 public class NotaCuestionario {
     @Id

@@ -74,5 +74,3 @@ public class Estudiante extends User {
     }
 
 }
-//Final version
-
