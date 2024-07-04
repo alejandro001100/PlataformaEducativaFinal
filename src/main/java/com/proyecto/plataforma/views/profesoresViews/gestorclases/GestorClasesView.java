@@ -157,5 +157,6 @@ public class GestorClasesView extends VerticalLayout {
         alumnosDialog.open();
     }
 }
+
 //Final version
 
