@@ -36,6 +36,7 @@ public class GestorClasesView extends VerticalLayout {
     public GestorClasesView(CursosLista cursosLista) {
         this.cursosLista = cursosLista;
 
+
         setSizeFull();
         configureGrid();
         add(grid);
