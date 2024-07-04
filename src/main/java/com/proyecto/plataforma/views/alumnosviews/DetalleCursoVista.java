@@ -1,8 +1,8 @@
 package com.proyecto.plataforma.views.alumnosviews;
 
-import com.proyecto.plataforma.data.Capitulo;
-import com.proyecto.plataforma.data.Cursos;
-import com.proyecto.plataforma.services.CursosService;
+import com.proyecto.plataforma.capaNegocio.Capitulo;
+import com.proyecto.plataforma.capaNegocio.Cursos;
+import com.proyecto.plataforma.conexionMongoDB.services.CursosService;
 import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;

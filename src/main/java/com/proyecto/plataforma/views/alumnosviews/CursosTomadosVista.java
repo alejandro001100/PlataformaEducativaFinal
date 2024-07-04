@@ -1,14 +1,13 @@
 package com.proyecto.plataforma.views.alumnosviews;
 
-import com.proyecto.plataforma.data.Cursos;
-import com.proyecto.plataforma.data.Estudiante;
-import com.proyecto.plataforma.data.User;
-import com.proyecto.plataforma.services.EstudianteService;
+import com.proyecto.plataforma.capaNegocio.Cursos;
+import com.proyecto.plataforma.capaNegocio.Estudiante;
+import com.proyecto.plataforma.capaNegocio.User;
+import com.proyecto.plataforma.conexionMongoDB.services.EstudianteService;
 import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;

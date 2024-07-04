@@ -1,15 +1,15 @@
 package com.proyecto.plataforma.views;
 
-import com.proyecto.plataforma.data.User;
+import com.proyecto.plataforma.capaNegocio.User;
 import com.proyecto.plataforma.views.alumnosviews.BuscarCursoVista;
 import com.proyecto.plataforma.views.alumnosviews.CursosTomadosVista;
 import com.proyecto.plataforma.views.alumnosviews.VerMisNotasVista;
-import com.proyecto.plataforma.views.creadorcuestionario.CreadorCuestionarioView;
-import com.proyecto.plataforma.views.creadorcurso.CreadorCursoView;
-import com.proyecto.plataforma.views.gestionusuario.GestionUsuarioView;
-import com.proyecto.plataforma.views.gestorclases.GestorClasesView;
-import com.proyecto.plataforma.views.gestorcuestionario.GestorCuestionarioView;
-import com.proyecto.plataforma.views.login.LoginView;
+import com.proyecto.plataforma.views.profesoresViews.creadorcuestionario.CreadorCuestionarioView;
+import com.proyecto.plataforma.views.profesoresViews.creadorcurso.CreadorCursoView;
+import com.proyecto.plataforma.views.adminViews.gestionusuario.GestionUsuarioView;
+import com.proyecto.plataforma.views.profesoresViews.gestorclases.GestorClasesView;
+import com.proyecto.plataforma.views.profesoresViews.gestorcuestionario.GestorCuestionarioView;
+import com.proyecto.plataforma.views.inicioSesionViews.login.LoginView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;

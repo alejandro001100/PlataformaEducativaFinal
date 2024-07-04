@@ -1,11 +1,12 @@
 package com.proyecto.plataforma.views.alumnosviews;
 
-import com.proyecto.plataforma.data.Cuestionario;
-import com.proyecto.plataforma.data.Estudiante;
-import com.proyecto.plataforma.data.NotaCuestionario;
-import com.proyecto.plataforma.data.Pregunta;
-import com.proyecto.plataforma.services.CuestionarioService;
-import com.proyecto.plataforma.services.EstudianteService;
+import com.proyecto.plataforma.capaNegocio.Cuestionario;
+import com.proyecto.plataforma.capaNegocio.Estudiante;
+import com.proyecto.plataforma.capaNegocio.TipoPregunta;
+import com.proyecto.plataforma.capaNegocio.NotaCuestionario;
+import com.proyecto.plataforma.capaNegocio.Pregunta;
+import com.proyecto.plataforma.conexionMongoDB.services.CuestionarioService;
+import com.proyecto.plataforma.conexionMongoDB.services.EstudianteService;
 import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -88,12 +89,12 @@ public class CuestionarioVista extends VerticalLayout implements HasUrlParameter
 
             cuestionario.getPreguntas().forEach(pregunta -> {
                 add(new Paragraph("Pregunta: " + pregunta.getTexto()));
-                if (pregunta.getTipo() == com.proyecto.plataforma.data.TipoPregunta.VERDADERO_FALSO) {
+                if (pregunta.getTipo() == TipoPregunta.VERDADERO_FALSO) {
                     RadioButtonGroup<String> options = new RadioButtonGroup<>();
                     options.setItems("Verdadero", "Falso");
                     options.addValueChangeListener(event -> respuestas.put(pregunta, event.getValue()));
                     add(options);
-                } else if (pregunta.getTipo() == com.proyecto.plataforma.data.TipoPregunta.OPCION_MULTIPLE) {
+                } else if (pregunta.getTipo() == TipoPregunta.OPCION_MULTIPLE) {
                     CheckboxGroup<String> options = new CheckboxGroup<>();
                     options.setItems(pregunta.getOpciones());
                     options.addValueChangeListener(event -> respuestas.put(pregunta, String.join(", ", event.getValue())));
@@ -165,9 +166,9 @@ public class CuestionarioVista extends VerticalLayout implements HasUrlParameter
         for (Map.Entry<Pregunta, String> entry : respuestas.entrySet()) {
             Pregunta pregunta = entry.getKey();
             String respuesta = entry.getValue();
-            if (pregunta.getTipo() == com.proyecto.plataforma.data.TipoPregunta.VERDADERO_FALSO && respuesta.equals(pregunta.getRespuestaCorrecta())) {
+            if (pregunta.getTipo() == TipoPregunta.VERDADERO_FALSO && respuesta.equals(pregunta.getRespuestaCorrecta())) {
                 nota += pregunta.getPuntaje();
-            } else if (pregunta.getTipo() == com.proyecto.plataforma.data.TipoPregunta.OPCION_MULTIPLE) {
+            } else if (pregunta.getTipo() == TipoPregunta.OPCION_MULTIPLE) {
                 if (respuesta.equals(pregunta.getRespuestaCorrecta())) {
                     nota += pregunta.getPuntaje();
                 }

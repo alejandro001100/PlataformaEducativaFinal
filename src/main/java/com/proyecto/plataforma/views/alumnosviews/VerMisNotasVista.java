@@ -1,9 +1,9 @@
 package com.proyecto.plataforma.views.alumnosviews;
 
-import com.proyecto.plataforma.data.Estudiante;
-import com.proyecto.plataforma.data.NotaCuestionario;
-import com.proyecto.plataforma.data.User;
-import com.proyecto.plataforma.services.EstudianteService;
+import com.proyecto.plataforma.capaNegocio.Estudiante;
+import com.proyecto.plataforma.capaNegocio.NotaCuestionario;
+import com.proyecto.plataforma.capaNegocio.User;
+import com.proyecto.plataforma.conexionMongoDB.services.EstudianteService;
 import com.proyecto.plataforma.views.MainLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
