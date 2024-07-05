@@ -1,6 +1,7 @@
 package com.proyecto.plataforma.views;
 
 import com.proyecto.plataforma.capaNegocio.User;
+import com.proyecto.plataforma.views.alumnosviews.ArbolDecisionView;
 import com.proyecto.plataforma.views.alumnosviews.BuscarCursoVista;
 import com.proyecto.plataforma.views.alumnosviews.CursosTomadosVista;
 import com.proyecto.plataforma.views.alumnosviews.VerMisNotasVista;
@@ -66,7 +67,8 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver {
                 addToDrawer(new VerticalLayout(
                         new RouterLink("Buscar Cursos", BuscarCursoVista.class),
                         new RouterLink("Cursos tomados", CursosTomadosVista.class),
-                        new RouterLink("Ver mis notas", VerMisNotasVista.class)
+                        new RouterLink("Ver mis notas", VerMisNotasVista.class),
+                        new RouterLink("Encuentra tu área - Árbol de Decisión", ArbolDecisionView.class)
                 ));
             }
         }
