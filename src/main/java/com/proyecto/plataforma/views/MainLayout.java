@@ -5,6 +5,7 @@ import com.proyecto.plataforma.views.alumnosviews.ArbolDecisionView;
 import com.proyecto.plataforma.views.alumnosviews.BuscarCursoVista;
 import com.proyecto.plataforma.views.alumnosviews.CursosTomadosVista;
 import com.proyecto.plataforma.views.alumnosviews.VerMisNotasVista;
+import com.proyecto.plataforma.views.minijuegos.JuegoView;
 import com.proyecto.plataforma.views.profesoresViews.creadorcuestionario.CreadorCuestionarioView;
 import com.proyecto.plataforma.views.profesoresViews.creadorcurso.CreadorCursoView;
 import com.proyecto.plataforma.views.adminViews.gestionusuario.GestionUsuarioView;
@@ -68,7 +69,8 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver {
                         new RouterLink("Buscar Cursos", BuscarCursoVista.class),
                         new RouterLink("Cursos tomados", CursosTomadosVista.class),
                         new RouterLink("Ver mis notas", VerMisNotasVista.class),
-                        new RouterLink("Encuentra tu área - Árbol de Decisión", ArbolDecisionView.class)
+                        new RouterLink("Encuentra tu área - Árbol de Decisión", ArbolDecisionView.class),
+                        new RouterLink("Encuentra el sector mas cercano - Grafo Dijkstra", JuegoView.class)
                 ));
             }
         }
