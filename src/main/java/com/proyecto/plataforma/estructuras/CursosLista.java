@@ -102,5 +102,3 @@ public class CursosLista {
         return (List<Cursos>) cursosService.encontrarTodos();
     }
 }
-//Final version
-

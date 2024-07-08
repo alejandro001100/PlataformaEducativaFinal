@@ -100,7 +100,7 @@ public class GestorClasesView extends VerticalLayout {
         temaField.setValue(curso.getTema() != null ? curso.getTema() : "");
 
         TextField profesorField = new TextField("Profesor");
-        profesorField.setValue(curso.getProfesor() != null ? curso.getProfesor() : "");
+        profesorField.setValue(curso.getProfesorId() != null ? curso.getProfesorId() : "");
         profesorField.setReadOnly(true);
 
         Button cerrarButton = new Button("Cerrar", event -> dialog.close());

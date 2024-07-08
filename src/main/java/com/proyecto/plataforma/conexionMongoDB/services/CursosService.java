@@ -39,12 +39,12 @@ public class CursosService {
         return cursosRepository.findByTema(tema);
     }
 
-    public List<Cursos> buscarPorProfesor(String profesor) {
-        return cursosRepository.findByProfesor(profesor);
+    public List<Cursos> buscarPorProfesor(String profesorId) {
+        return cursosRepository.findByProfesorId(profesorId);
     }
 
-    public List<Cursos> buscarPorTemaYProfesor(String tema, String profesor) {
-        return cursosRepository.findByTemaAndProfesor(tema, profesor);
+    public List<Cursos> buscarPorTemaYProfesor(String tema, String profesorId) {
+        return cursosRepository.findByTemaAndProfesorId(tema, profesorId);
     }
 
     public Cursos agregarAlumnoAlCurso(String cursoId, Estudiante alumno) {
@@ -56,5 +56,3 @@ public class CursosService {
         return null;
     }
 }
-//Final version
-

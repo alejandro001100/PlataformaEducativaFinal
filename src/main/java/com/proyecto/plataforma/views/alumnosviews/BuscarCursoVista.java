@@ -68,7 +68,7 @@ public class BuscarCursoVista extends VerticalLayout {
         List<Cursos> cursosList = StreamSupport
                 .stream(cursosService.encontrarTodos().spliterator(), false)
                 .filter(curso -> (tema == null || tema.isEmpty() || curso.getTema().contains(tema)) &&
-                        (profesor == null || profesor.isEmpty() || curso.getProfesor().contains(profesor)))
+                        (profesor == null || profesor.isEmpty() || curso.getProfesorId().contains(profesor)))
                 .collect(Collectors.toList());
 
         grid.setItems(cursosList);

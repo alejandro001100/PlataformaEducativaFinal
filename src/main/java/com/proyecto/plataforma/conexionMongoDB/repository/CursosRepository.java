@@ -7,9 +7,7 @@ import java.util.List;
 
 public interface CursosRepository extends MongoRepository<Cursos, String> {
         List<Cursos> findByTema(String tema);
-        List<Cursos> findByProfesor(String profesorId);
-        List<Cursos> findByTemaAndProfesor(String tema, String profesor);
+        List<Cursos> findByProfesorId(String profesorId);
+        List<Cursos> findByTemaAndProfesorId(String tema, String profesorId);
         Cursos findByTitulo(String titulo);
 }
-//Final version
-

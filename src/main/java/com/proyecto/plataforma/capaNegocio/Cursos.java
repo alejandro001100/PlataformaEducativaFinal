@@ -16,19 +16,19 @@ public class Cursos {
     private String descripcion;
     private String area;
     private String tema;
-    private String profesor;
+    private String profesorId; // Cambiado de profesor a profesorId
     private PriorityQueue<Capitulo> capitulos;
 
     @DBRef
     private List<Estudiante> alumnosRegistrados;
 
-    public Cursos(String id, String titulo, String descripcion, String area, String tema, String profesor) {
+    public Cursos(String id, String titulo, String descripcion, String area, String tema, String profesorId) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.area = area;
         this.tema = tema;
-        this.profesor = profesor;
+        this.profesorId = profesorId; // Cambiado de profesor a profesorId
         this.capitulos = new PriorityQueue<>();
         this.alumnosRegistrados = new ArrayList<>();
     }
@@ -75,12 +75,12 @@ public class Cursos {
         this.tema = tema;
     }
 
-    public String getProfesor() {
-        return profesor;
+    public String getProfesorId() { // Cambiado de getProfesor a getProfesorId
+        return profesorId;
     }
 
-    public void setProfesor(String profesor) {
-        this.profesor = profesor;
+    public void setProfesorId(String profesorId) { // Cambiado de setProfesor a setProfesorId
+        this.profesorId = profesorId;
     }
 
     public PriorityQueue<Capitulo> getCapitulos() {
@@ -103,5 +103,3 @@ public class Cursos {
         this.alumnosRegistrados.add(alumno);
     }
 }
-//Final version
-
