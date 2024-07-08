@@ -84,4 +84,3 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver {
     }
 }
 //Final version
-
