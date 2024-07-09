@@ -1,5 +1,6 @@
 package com.proyecto.plataforma.capaNegocio;
 
+import com.proyecto.plataforma.estructuras.ProfesorLista;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,6 +16,7 @@ public class Cuestionario {
     private int tiempoExamen; // en minutos
     private int intentos; // en minutos
     private String capituloId; // Añadir esta propiedad
+    private String autor;
 
     // Getters y Setters
     public String getId() {
@@ -71,6 +73,14 @@ public class Cuestionario {
 
     public void setCapituloId(String capituloId) {
         this.capituloId = capituloId;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
     }
 }
 //Final version

@@ -1,6 +1,7 @@
 package com.proyecto.plataforma.conexionMongoDB.services;
 
 import com.proyecto.plataforma.capaNegocio.Cuestionario;
+import com.proyecto.plataforma.capaNegocio.Profesor;
 import com.proyecto.plataforma.conexionMongoDB.repository.CuestionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import java.util.Optional;
 
 @Service
 public class CuestionarioService {
+
     @Autowired
     private CuestionarioRepository cuestionarioRepository;
 
@@ -55,6 +57,11 @@ public class CuestionarioService {
     public List<Cuestionario> buscarPorTiempoExamen(int minTiempo, int maxTiempo) {
         return cuestionarioRepository.findByTiempoExamenBetween(minTiempo, maxTiempo);
     }
+
+    public List<Cuestionario> buscarPorAutor(String autor) {
+        return cuestionarioRepository.findByAutor(autor);
+    }
 }
+
 //Final version
 

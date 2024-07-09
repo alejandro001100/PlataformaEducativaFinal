@@ -36,7 +36,6 @@ public class GestorClasesView extends VerticalLayout {
     public GestorClasesView(CursosLista cursosLista) {
         this.cursosLista = cursosLista;
 
-
         setSizeFull();
         configureGrid();
         add(grid);
@@ -44,7 +43,7 @@ public class GestorClasesView extends VerticalLayout {
     }
 
     private void configureGrid() {
-        grid.setColumns("titulo", "descripcion", "area", "tema", "profesor");
+        grid.setColumns("titulo", "descripcion", "area", "tema", "autor");
         grid.getColumns().forEach(column -> column.setAutoWidth(true));
 
         grid.addComponentColumn(curso -> {
@@ -100,7 +99,7 @@ public class GestorClasesView extends VerticalLayout {
         temaField.setValue(curso.getTema() != null ? curso.getTema() : "");
 
         TextField profesorField = new TextField("Profesor");
-        profesorField.setValue(curso.getProfesorId() != null ? curso.getProfesorId() : "");
+        profesorField.setValue(curso.getAutor() != null ? curso.getAutor() : "");
         profesorField.setReadOnly(true);
 
         Button cerrarButton = new Button("Cerrar", event -> dialog.close());
@@ -158,7 +157,4 @@ public class GestorClasesView extends VerticalLayout {
         alumnosDialog.open();
     }
 }
-
-
-//Final version
 

@@ -1,6 +1,7 @@
 package com.proyecto.plataforma.estructuras;
 
 import com.proyecto.plataforma.capaNegocio.Cuestionario;
+import com.proyecto.plataforma.capaNegocio.Profesor;
 import com.proyecto.plataforma.conexionMongoDB.services.CuestionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -61,6 +62,9 @@ public class CuestionarioLista {
         }
         return false;
     }
+
+    public List<Cuestionario> buscarPorAutor(String autor) {
+        return cuestionarioService.buscarPorAutor(autor);
+    }
 }
-//Final version
 

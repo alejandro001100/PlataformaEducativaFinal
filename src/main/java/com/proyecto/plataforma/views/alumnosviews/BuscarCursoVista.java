@@ -28,7 +28,7 @@ public class BuscarCursoVista extends VerticalLayout {
     private final EstudianteService estudianteService;
     private final Grid<Cursos> grid = new Grid<>(Cursos.class);
     private final TextField filtroTema = new TextField("Tema");
-    private final TextField filtroProfesor = new TextField("Profesor");
+    private final TextField filtroAutor = new TextField("Autor");
 
     @Autowired
     public BuscarCursoVista(CursosService cursosService, EstudianteService estudianteService) {
@@ -38,12 +38,12 @@ public class BuscarCursoVista extends VerticalLayout {
         setSizeFull();
         configurarGrid();
         configurarFiltros();
-        add(new HorizontalLayout(filtroTema, filtroProfesor), grid);
+        add(new HorizontalLayout(filtroTema, filtroAutor), grid);
         updateGrid();
     }
 
     private void configurarGrid() {
-        grid.setColumns("titulo", "descripcion", "area", "tema", "profesor");
+        grid.setColumns("titulo", "descripcion", "area", "tema", "autor");
         grid.getColumns().forEach(column -> column.setAutoWidth(true));
 
         grid.addComponentColumn(curso -> {
@@ -55,20 +55,20 @@ public class BuscarCursoVista extends VerticalLayout {
 
     private void configurarFiltros() {
         filtroTema.setPlaceholder("Buscar por tema");
-        filtroProfesor.setPlaceholder("Buscar por profesor");
+        filtroAutor.setPlaceholder("Buscar por autor");
 
         filtroTema.addValueChangeListener(event -> updateGrid());
-        filtroProfesor.addValueChangeListener(event -> updateGrid());
+        filtroAutor.addValueChangeListener(event -> updateGrid());
     }
 
     private void updateGrid() {
         String tema = filtroTema.getValue();
-        String profesor = filtroProfesor.getValue();
+        String autor = filtroAutor.getValue();
 
         List<Cursos> cursosList = StreamSupport
                 .stream(cursosService.encontrarTodos().spliterator(), false)
                 .filter(curso -> (tema == null || tema.isEmpty() || curso.getTema().contains(tema)) &&
-                        (profesor == null || profesor.isEmpty() || curso.getProfesorId().contains(profesor)))
+                        (autor == null || autor.isEmpty() || curso.getAutor().contains(autor)))
                 .collect(Collectors.toList());
 
         grid.setItems(cursosList);
@@ -77,7 +77,7 @@ public class BuscarCursoVista extends VerticalLayout {
     private void inscribirseEnCurso(Cursos curso) {
         Estudiante estudiante = getCurrentEstudiante();
         if (estudiante != null) {
-            if (estudiante.getCursosTomados().contains(curso)) {
+            if (estudiante.isCursoTomado(curso.getTitulo())==true) {
                 Notification.show("Ya estás inscrito en este curso: " + curso.getTitulo(), 3000, Notification.Position.MIDDLE);
                 return;
             }
@@ -98,5 +98,6 @@ public class BuscarCursoVista extends VerticalLayout {
         return (Estudiante) VaadinSession.getCurrent().getAttribute(Estudiante.class);
     }
 }
+
 //Final version
 

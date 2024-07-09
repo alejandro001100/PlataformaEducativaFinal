@@ -66,11 +66,30 @@ public class Estudiante extends User {
         this.notasCuestionarios.add(nota);
     }
 
-    public NotaCuestionario getNotaCuestionario(String cuestionarioId) {
+   /* public NotaCuestionario getNotaCuestionario(String cuestionarioId) {
         return notasCuestionarios.stream()
                 .filter(nota -> nota.getTituloCuestionario().equals(cuestionarioId))
                 .findFirst()
                 .orElse(null);
-    }
+    }*/
+   public NotaCuestionario getNotaCuestionario(String cuestionarioId) {
+       return notasCuestionarios.stream()
+               .filter(nota -> {
+                   String tituloCuestionario = nota.getTituloCuestionario();
+                   return tituloCuestionario != null && tituloCuestionario.equals(cuestionarioId);
+               })
+               .findFirst()
+               .orElse(null);
+   }
+
+   public Boolean isCursoTomado(String cursoT) {
+       for (Cursos c : cursosTomados) {
+           if (c.getTitulo().equals(cursoT)) {
+               return true;
+           }
+       }
+       return false;
+   }
+
 
 }

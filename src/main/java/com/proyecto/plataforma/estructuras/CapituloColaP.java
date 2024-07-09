@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 import java.util.PriorityQueue;
 
 @Component
-public class CapituloLista {
+public class CapituloColaP {
     private PriorityQueue<Capitulo> capituloLista;
     private final CapituloService capituloService;
 
     @Autowired
-    public CapituloLista(CapituloService capituloService) {
+    public CapituloColaP(CapituloService capituloService) {
         this.capituloService = capituloService;
         this.capituloLista = new PriorityQueue<>();
         cargarCapitulo();

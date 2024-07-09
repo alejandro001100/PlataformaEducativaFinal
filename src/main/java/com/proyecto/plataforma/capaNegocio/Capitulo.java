@@ -73,8 +73,15 @@ public class Capitulo implements Comparable<Capitulo> {
 
     @Override
     public int compareTo(Capitulo o) {
-        return Integer.compare(this.prioridad, o.prioridad);
+        if (this.prioridad < o.prioridad) {
+            return -1; // Coloca this antes que o
+        } else if (this.prioridad > o.prioridad) {
+            return 1; // Coloca o antes que this
+        } else {
+            return 0; // Son iguales en prioridad
+        }
     }
+
 }
 //Final version
 

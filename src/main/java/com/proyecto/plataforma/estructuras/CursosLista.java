@@ -87,7 +87,7 @@ public class CursosLista {
     }
 
     public List<Cursos> buscarCursosPorTemayProfesor(String tema, String profesor) {
-        return cursosService.buscarPorTemaYProfesor(tema, profesor);
+        return cursosService.buscarPorTemaYAutor(tema, profesor);
     }
 
     public List<Cursos> buscarCursosPorTema(String tema) {
@@ -95,7 +95,7 @@ public class CursosLista {
     }
 
     public List<Cursos> buscarPorProfesor(String profesor) {
-        return cursosService.buscarPorProfesor(profesor);
+        return cursosService.buscarPorAutor(profesor);
     }
 
     public List<Cursos> encontrarTodos() {

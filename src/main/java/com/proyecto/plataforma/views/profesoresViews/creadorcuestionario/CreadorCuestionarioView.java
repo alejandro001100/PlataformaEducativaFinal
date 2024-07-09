@@ -105,15 +105,13 @@ public class CreadorCuestionarioView extends VerticalLayout {
         cuestionario.setPreguntas(preguntas);
         cuestionario.setPuntajeTotal(puntajeTotal);
         cuestionario.setIntentos(intentosComboBox.getValue());
-
+        Profesor currentUser = VaadinSession.getCurrent().getAttribute(Profesor.class);
+        cuestionario.setAutor(currentUser.getApellido());
+        currentUser.addCuestionarioCreado(cuestionario);
+        profesorService.saveProfesor(currentUser);
         cuestionarioService.saveCuestionario(cuestionario);
 
-        Profesor currentUser = VaadinSession.getCurrent().getAttribute(Profesor.class);
-        if (currentUser != null) {
-            currentUser.addCuestionarioCreado(cuestionario);
-            
-            profesorService.saveProfesor(currentUser);
-        }
+
 
         Notification.show("Cuestionario guardado exitosamente.");
         resetFormulario();
@@ -190,4 +188,3 @@ public class CreadorCuestionarioView extends VerticalLayout {
     }
 }
 //Final version
-
