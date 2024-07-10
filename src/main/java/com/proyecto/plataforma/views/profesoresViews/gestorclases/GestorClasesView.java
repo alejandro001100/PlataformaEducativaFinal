@@ -4,7 +4,7 @@ import com.proyecto.plataforma.capaNegocio.Cursos;
 import com.proyecto.plataforma.capaNegocio.Estudiante;
 import com.proyecto.plataforma.capaNegocio.NotaCuestionario;
 import com.proyecto.plataforma.capaNegocio.Profesor;
-import com.proyecto.plataforma.estructuras.*;
+import com.proyecto.plataforma.estructuras.CursosLista;
 import com.proyecto.plataforma.views.MainLayout;
 import com.proyecto.plataforma.views.profesoresViews.creadorcapituloscurso.CreadorCapitulosView;
 import com.vaadin.flow.component.button.Button;
@@ -43,7 +43,7 @@ public class GestorClasesView extends VerticalLayout {
     }
 
     private void configureGrid() {
-        grid.setColumns("titulo", "descripcion", "area", "tema", "autor");
+        grid.setColumns("titulo", "descripcion", "area", "tema", "profesor.nombre");
         grid.getColumns().forEach(column -> column.setAutoWidth(true));
 
         grid.addComponentColumn(curso -> {
@@ -73,7 +73,7 @@ public class GestorClasesView extends VerticalLayout {
         if (currentUser != null) {
             System.out.println("Profesor actual: " + currentUser.getCorreo());
             cursosLista.cargarCursos();
-            List<Cursos> cursosDelProfesor = cursosLista.buscarPorProfesor(currentUser.getNombre());
+            List<Cursos> cursosDelProfesor = cursosLista.buscarPorProfesorId(currentUser.getId());
             System.out.println("Cursos del profesor: " + cursosDelProfesor.size());
             grid.setItems(cursosDelProfesor);
         } else {
@@ -99,7 +99,7 @@ public class GestorClasesView extends VerticalLayout {
         temaField.setValue(curso.getTema() != null ? curso.getTema() : "");
 
         TextField profesorField = new TextField("Profesor");
-        profesorField.setValue(curso.getAutor() != null ? curso.getAutor() : "");
+        profesorField.setValue(curso.getProfesor().getNombre() != null ? curso.getProfesor().getNombre() : "");
         profesorField.setReadOnly(true);
 
         Button cerrarButton = new Button("Cerrar", event -> dialog.close());
@@ -157,4 +157,3 @@ public class GestorClasesView extends VerticalLayout {
         alumnosDialog.open();
     }
 }
-

@@ -10,7 +10,7 @@ public interface CuestionarioRepository extends MongoRepository<Cuestionario, St
 
     List<Cuestionario> findByTituloContaining(String titulo);
     List<Cuestionario> findByTiempoExamenBetween(int minTiempo, int maxTiempo);
-    List<Cuestionario> findByAutor(String autor);
+    List<Cuestionario> findByProfesor(Profesor profesor);
 }
 
 //Final version

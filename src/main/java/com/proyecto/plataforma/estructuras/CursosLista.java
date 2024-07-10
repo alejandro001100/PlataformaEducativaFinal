@@ -2,6 +2,7 @@ package com.proyecto.plataforma.estructuras;
 
 import com.proyecto.plataforma.capaNegocio.Capitulo;
 import com.proyecto.plataforma.capaNegocio.Cursos;
+import com.proyecto.plataforma.capaNegocio.Profesor;
 import com.proyecto.plataforma.conexionMongoDB.services.CursosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class CursosLista {
     public CursosLista(CursosService cursosService) {
         this.cursosService = cursosService;
         this.cursosLista = new ArrayList<>();
-        cargarCursos(); // Asegúrate de cargar los cursos al iniciar
+        cargarCursos();
     }
 
     public List<Cursos> getCursosLista() {
@@ -86,19 +87,29 @@ public class CursosLista {
                 .collect(Collectors.toList());
     }
 
-    public List<Cursos> buscarCursosPorTemayProfesor(String tema, String profesor) {
-        return cursosService.buscarPorTemaYAutor(tema, profesor);
+    public List<Cursos> buscarCursosPorTemayProfesor(String tema, Profesor profesor) {
+        return cursosService.buscarPorTemaYProfesor(tema, profesor);
     }
 
     public List<Cursos> buscarCursosPorTema(String tema) {
         return cursosService.buscarPorTema(tema);
     }
 
-    public List<Cursos> buscarPorProfesor(String profesor) {
-        return cursosService.buscarPorAutor(profesor);
+    public List<Cursos> buscarPorProfesor(Profesor profesor) {
+        return cursosService.buscarPorProfesor(profesor);
     }
 
     public List<Cursos> encontrarTodos() {
         return (List<Cursos>) cursosService.encontrarTodos();
+    }
+
+    public List<Cursos> buscarPorProfesorId(String id){
+        List<Cursos> lista= new ArrayList<>();
+        for(Cursos c : cursosLista){
+            if(c.getProfesor().getId().equals(id)){
+                lista.add(c);
+            }
+        }
+        return lista;
     }
 }

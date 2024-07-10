@@ -2,6 +2,7 @@ package com.proyecto.plataforma.conexionMongoDB.services;
 
 import com.proyecto.plataforma.capaNegocio.Cursos;
 import com.proyecto.plataforma.capaNegocio.Estudiante;
+import com.proyecto.plataforma.capaNegocio.Profesor;
 import com.proyecto.plataforma.conexionMongoDB.repository.CursosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,12 +40,12 @@ public class CursosService {
         return cursosRepository.findByTema(tema);
     }
 
-    public List<Cursos> buscarPorAutor(String autor) {
-        return cursosRepository.findByAutor(autor);
+    public List<Cursos> buscarPorProfesor(Profesor profesor) {
+        return cursosRepository.findByProfesor(profesor);
     }
 
-    public List<Cursos> buscarPorTemaYAutor(String tema, String autor) {
-        return cursosRepository.findByTemaAndAutor(tema, autor);
+    public List<Cursos> buscarPorTemaYProfesor(String tema, Profesor profesor) {
+        return cursosRepository.findByTemaAndProfesor(tema, profesor);
     }
 
     public Cursos agregarAlumnoAlCurso(String cursoId, Estudiante alumno) {

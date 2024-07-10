@@ -106,7 +106,8 @@ public class CreadorCuestionarioView extends VerticalLayout {
         cuestionario.setPuntajeTotal(puntajeTotal);
         cuestionario.setIntentos(intentosComboBox.getValue());
         Profesor currentUser = VaadinSession.getCurrent().getAttribute(Profesor.class);
-        cuestionario.setAutor(currentUser.getApellido());
+        Profesor profesor = new Profesor(currentUser.getNombre(), currentUser.getApellido(), currentUser.getCorreo(), currentUser.getContraseña(), currentUser.getRol(), currentUser.getId() );
+        cuestionario.setProfesor(profesor);
         currentUser.addCuestionarioCreado(cuestionario);
         profesorService.saveProfesor(currentUser);
         cuestionarioService.saveCuestionario(cuestionario);

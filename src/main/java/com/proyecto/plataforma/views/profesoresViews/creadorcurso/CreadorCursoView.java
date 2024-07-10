@@ -1,8 +1,8 @@
 package com.proyecto.plataforma.views.profesoresViews.creadorcurso;
 
 import com.proyecto.plataforma.capaNegocio.Cursos;
-import com.proyecto.plataforma.estructuras.CursosLista;
 import com.proyecto.plataforma.capaNegocio.Profesor;
+import com.proyecto.plataforma.estructuras.CursosLista;
 import com.proyecto.plataforma.estructuras.ProfesorLista;
 import com.proyecto.plataforma.views.MainLayout;
 import com.proyecto.plataforma.views.profesoresViews.gestorclases.GestorClasesView;
@@ -20,7 +20,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
         TextArea textAreaResumen = new TextArea();
         Button buttonPrimary = new Button();
 
-        layoutRow.addClassName(Gap.MEDIUM);
+        layoutRow.addClassName("gap-medium");
         layoutRow.setWidth("100%");
         layoutRow.getStyle().set("flex-grow", "1");
         layoutColumn2.setWidth("100%");
@@ -95,6 +95,7 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
             String tema = textFieldTema.getValue();
             String resumen = textAreaResumen.getValue();
             Profesor currentUser = VaadinSession.getCurrent().getAttribute(Profesor.class);
+            Profesor profesor = new Profesor(currentUser.getNombre(), currentUser.getApellido(), currentUser.getCorreo(), currentUser.getContraseña(), currentUser.getRol(), currentUser.getId());
 
             if (cursosLista.isTituloRegistrado(titulo)) {
                 Notification.show("El título del curso ya está registrado", 3000, Notification.Position.MIDDLE);
@@ -103,7 +104,7 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
             } else if (currentUser == null) {
                 Notification.show("No se pudo encontrar el usuario actual", 3000, Notification.Position.MIDDLE);
             } else {
-                Cursos cursos = new Cursos(null, titulo, resumen, area, tema, currentUser.getNombre());
+                Cursos cursos = new Cursos(null, titulo, resumen, area, tema, profesor);
                 cursosLista.guardarCursos(cursos);
                 currentUser.addCursoCreado(cursos);
                 profesorLista.agregarProfesor(currentUser);  // Usamos ProfesorLista para guardar el profesor actualizado
@@ -125,5 +126,3 @@ public class CreadorCursoView extends Composite<VerticalLayout> {
         comboBox.setItemLabelGenerator(SampleItem::label);
     }
 }
-//Final version
-

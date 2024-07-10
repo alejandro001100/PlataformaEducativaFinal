@@ -63,8 +63,18 @@ public class CuestionarioLista {
         return false;
     }
 
-    public List<Cuestionario> buscarPorAutor(String autor) {
-        return cuestionarioService.buscarPorAutor(autor);
+    public List<Cuestionario> buscarPorProfesor(Profesor profesor) {
+        return cuestionarioService.buscarPorProfesor(profesor);
+    }
+
+    public List<Cuestionario> buscarPorProfesorString(String id){
+        List<Cuestionario> lista=new ArrayList<>();
+        for(Cuestionario c: cuestionarioLista){
+            if(c.getProfesor().getId().equals(id)){
+                lista.add(c);
+            }
+        }
+        return lista;
     }
 }
 

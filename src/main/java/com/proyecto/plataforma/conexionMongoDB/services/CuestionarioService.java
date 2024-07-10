@@ -58,8 +58,8 @@ public class CuestionarioService {
         return cuestionarioRepository.findByTiempoExamenBetween(minTiempo, maxTiempo);
     }
 
-    public List<Cuestionario> buscarPorAutor(String autor) {
-        return cuestionarioRepository.findByAutor(autor);
+    public List<Cuestionario> buscarPorProfesor(Profesor profesor) {
+        return cuestionarioRepository.findByProfesor(profesor);
     }
 }
 

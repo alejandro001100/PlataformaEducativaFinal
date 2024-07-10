@@ -43,7 +43,7 @@ public class BuscarCursoVista extends VerticalLayout {
     }
 
     private void configurarGrid() {
-        grid.setColumns("titulo", "descripcion", "area", "tema", "autor");
+        grid.setColumns("titulo", "descripcion", "area", "tema", "profesor");
         grid.getColumns().forEach(column -> column.setAutoWidth(true));
 
         grid.addComponentColumn(curso -> {
@@ -68,7 +68,7 @@ public class BuscarCursoVista extends VerticalLayout {
         List<Cursos> cursosList = StreamSupport
                 .stream(cursosService.encontrarTodos().spliterator(), false)
                 .filter(curso -> (tema == null || tema.isEmpty() || curso.getTema().contains(tema)) &&
-                        (autor == null || autor.isEmpty() || curso.getAutor().contains(autor)))
+                        (autor == null || autor.isEmpty() || curso.getProfesor().getNombre().contains(autor)))
                 .collect(Collectors.toList());
 
         grid.setItems(cursosList);
@@ -77,7 +77,7 @@ public class BuscarCursoVista extends VerticalLayout {
     private void inscribirseEnCurso(Cursos curso) {
         Estudiante estudiante = getCurrentEstudiante();
         if (estudiante != null) {
-            if (estudiante.isCursoTomado(curso.getTitulo())==true) {
+            if (estudiante.isCursoTomado(curso.getTitulo())) {
                 Notification.show("Ya estás inscrito en este curso: " + curso.getTitulo(), 3000, Notification.Position.MIDDLE);
                 return;
             }
@@ -98,6 +98,3 @@ public class BuscarCursoVista extends VerticalLayout {
         return (Estudiante) VaadinSession.getCurrent().getAttribute(Estudiante.class);
     }
 }
-
-//Final version
-
