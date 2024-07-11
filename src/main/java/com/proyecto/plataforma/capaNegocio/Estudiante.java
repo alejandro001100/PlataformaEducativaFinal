@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 @Document(collection = "estudiantes")
 public class Estudiante extends User {
@@ -16,12 +17,14 @@ public class Estudiante extends User {
     private List<Cursos> cursosTomados;
 
     private List<NotaCuestionario> notasCuestionarios;
+    private List<Cuestionario> cuestionariosRendidos;
 
     public Estudiante(String nombre, String apellido, String correo, String contraseña, String rol, String id) {
         super(nombre, apellido, correo, contraseña, rol);
         this.id = id;
         this.cursosTomados = new ArrayList<>();
         this.notasCuestionarios = new ArrayList<>();
+        this.cuestionariosRendidos = new ArrayList<>();
     }
 
     public Estudiante() {

@@ -48,6 +48,7 @@ public class NotaCuestionario {
         this.nota = nota;
     }
 
+
     public Integer getIntentos() {
         return intentos;
     }

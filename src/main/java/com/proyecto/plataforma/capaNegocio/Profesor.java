@@ -1,5 +1,7 @@
 package com.proyecto.plataforma.capaNegocio;
 
+import org.w3c.dom.Notation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ public class Profesor extends User {
     private String id;
     private List<Cursos> cursosCreados;
     private List<Cuestionario> cuestionariosCreados;
+    private List<Cuestionario> cuestionariosRendidos;
 
     public Profesor(String nombre, String apellido, String correo, String contraseña, String rol, String id) {
         super(nombre, apellido, correo, contraseña, rol);
@@ -53,6 +56,14 @@ public class Profesor extends User {
         }
         return null;
     }
+    public Cuestionario buscarCuestionario(String titulo) {
+        for (Cuestionario cuestionario : cuestionariosCreados) {
+            if (cuestionario.getTitulo().equalsIgnoreCase(titulo)) {
+                return cuestionario;
+            }
+        }
+        return null;
+    }
 
     public void setCuestionariosCreados(List<Cuestionario> cuestionariosCreados) {
         this.cuestionariosCreados = cuestionariosCreados;
@@ -61,6 +72,7 @@ public class Profesor extends User {
     public void addCuestionarioCreado(Cuestionario cuestionario) {
         this.cuestionariosCreados.add(cuestionario);
     }
+
 }
 //Final version
 
