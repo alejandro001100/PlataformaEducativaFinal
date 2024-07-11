@@ -36,15 +36,15 @@ public class GestorCuestionarioView extends VerticalLayout {
         this.cuestionarioLista = cuestionarioLista;
         this.grid = new Grid<>(Cuestionario.class);
 
-        cargarCuestionarios();
+        setSizeFull();
+        configureGrid();
+        add(grid);
+        updateGrid();
+    }
 
-        grid.removeColumnByKey("id");
-        grid.removeColumnByKey("preguntas");
-        grid.removeColumnByKey("titulo");
-
-        grid.addColumn(Cuestionario::getTitulo).setHeader("Título");
+    private void configureGrid() {
+        grid.setColumns("titulo", "intentos");
         grid.addColumn(cuestionario -> cuestionario.getPreguntas().size()).setHeader("Número de Preguntas");
-        grid.addColumn(Cuestionario::getIntentos).setHeader("Número de Intentos");
 
         grid.addColumn(new ComponentRenderer<>(cuestionario -> {
             Div div = new Div();
@@ -94,19 +94,19 @@ public class GestorCuestionarioView extends VerticalLayout {
             if (selectedCuestionario != null) {
                 cuestionarioLista.eliminarCuestionario(selectedCuestionario);
                 Notification.show("Cuestionario eliminado exitosamente");
-                cargarCuestionarios();
+                updateGrid();
             } else {
                 Notification.show("Seleccione un cuestionario para eliminar");
             }
         });
 
-        add(grid, editarPreguntaButton, deleteButton);
+        add(editarPreguntaButton, deleteButton);
     }
 
-    private void cargarCuestionarios() {
-        Profesor profesorActual = VaadinSession.getCurrent().getAttribute(Profesor.class);
-        if (profesorActual != null) {
-            List<Cuestionario> cuestionariosDelProfesor = cuestionarioLista.buscarPorProfesorString(profesorActual.getId());
+    private void updateGrid() {
+        Profesor currentUser = VaadinSession.getCurrent().getAttribute(Profesor.class);
+        if (currentUser != null) {
+            List<Cuestionario> cuestionariosDelProfesor = cuestionarioLista.buscarPorProfesorString(currentUser.getId());
             if (cuestionariosDelProfesor.isEmpty()) {
                 Notification.show("No se encontraron cuestionarios para el profesor actual.");
             } else {
@@ -161,7 +161,7 @@ public class GestorCuestionarioView extends VerticalLayout {
             }
             cuestionarioLista.guardarCuestionario(cuestionario);
             Notification.show("Pregunta actualizada exitosamente");
-            cargarCuestionarios();
+            updateGrid();
             dialog.close();
         });
 

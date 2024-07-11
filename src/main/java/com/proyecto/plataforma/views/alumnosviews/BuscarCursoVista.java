@@ -43,8 +43,12 @@ public class BuscarCursoVista extends VerticalLayout {
     }
 
     private void configurarGrid() {
-        grid.setColumns("titulo", "descripcion", "area", "tema", "profesor");
-        grid.getColumns().forEach(column -> column.setAutoWidth(true));
+        grid.removeAllColumns();
+        grid.addColumn(Cursos::getTitulo).setHeader("Título");
+        grid.addColumn(Cursos::getDescripcion).setHeader("Descripción");
+        grid.addColumn(Cursos::getArea).setHeader("Área");
+        grid.addColumn(Cursos::getTema).setHeader("Tema");
+        grid.addColumn(curso -> curso.getProfesor().getNombre()).setHeader("Profesor");
 
         grid.addComponentColumn(curso -> {
             Button inscribirseButton = new Button("Inscribirse");

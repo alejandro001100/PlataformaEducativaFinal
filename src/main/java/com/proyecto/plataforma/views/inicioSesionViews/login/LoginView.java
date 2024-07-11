@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "")
 @PageTitle("Login | Proyecto Plataforma Aprendizaje")
-public class LoginView extends VerticalLayout {
+public class    LoginView extends VerticalLayout {
 
     private final EstudianteLista estudianteLista;
     private final ProfesorLista profesorLista;
