@@ -10,6 +10,7 @@ import java.util.PriorityQueue;
 
 @Document(collection = "cursos")
 public class Cursos {
+    //Atributos
     @Id
     private String id;
     private String titulo;
@@ -22,6 +23,8 @@ public class Cursos {
     @DBRef
     private List<Estudiante> alumnosRegistrados;
 
+
+    //Constructor
     public Cursos(String id, String titulo, String descripcion, String area, String tema, Profesor profesor) {
         this.id = id;
         this.titulo = titulo;
@@ -98,6 +101,8 @@ public class Cursos {
     public void setAlumnosRegistrados(List<Estudiante> alumnosRegistrados) {
         this.alumnosRegistrados = alumnosRegistrados;
     }
+
+    //Metodo
 
     public void agregarAlumnoRegistrado(Estudiante alumno) {
         this.alumnosRegistrados.add(alumno);

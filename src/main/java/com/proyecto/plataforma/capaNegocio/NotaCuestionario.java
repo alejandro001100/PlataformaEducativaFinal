@@ -7,12 +7,15 @@ import java.util.List;
 
 @Document(collection = "notas_cuestionario")
 public class NotaCuestionario {
+
+    //Atributos
     @Id
     private String id;
     private String tituloCuestionario;
     private int nota;
     private Integer intentos;  // Cambiamos a Integer para permitir nulos
 
+    //Constructores
     public NotaCuestionario(String tituloCuestionario, int nota, Integer intentos) {
         this.tituloCuestionario = tituloCuestionario;
         this.nota = nota;
@@ -20,7 +23,6 @@ public class NotaCuestionario {
     }
 
     public NotaCuestionario() {
-        // Constructor sin argumentos para JPA
     }
 
     // Getters y setters

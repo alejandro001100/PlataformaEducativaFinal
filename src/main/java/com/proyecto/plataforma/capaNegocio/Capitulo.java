@@ -8,6 +8,8 @@ import java.util.List;
 
 @Document(collection = "capitulos")
 public class Capitulo implements Comparable<Capitulo> {
+
+    //Atributos
     @Id
     private String id;
     private String titulo;
@@ -71,6 +73,7 @@ public class Capitulo implements Comparable<Capitulo> {
     }
 
 
+    //Compare to para la priority Qeue
     @Override
     public int compareTo(Capitulo o) {
         if (this.prioridad < o.prioridad) {

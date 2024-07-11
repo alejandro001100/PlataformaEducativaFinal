@@ -10,9 +10,13 @@ import java.util.List;
 
 @Component
 public class ProfesorLista {
+
+    //Atributo Lista
     private List<Profesor> profesorLista;
+    //Atributo que conecta con MongoDB
     private final ProfesorService profesorService;
 
+    //Constructor
     @Autowired
     public ProfesorLista(ProfesorService profesorService) {
         this.profesorService = profesorService;
@@ -20,6 +24,7 @@ public class ProfesorLista {
         cargarProfesor(); // Cargar profesores al inicializar
     }
 
+    //Getter y Setters
     public List<Profesor> getProfesorLista() {
         return profesorLista;
     }
@@ -28,6 +33,7 @@ public class ProfesorLista {
         this.profesorLista = profesorLista;
     }
 
+    //Metodos
     public void agregarProfesor(Profesor profesor) {
         profesorLista.add(profesor);
         profesorService.saveProfesor(profesor);

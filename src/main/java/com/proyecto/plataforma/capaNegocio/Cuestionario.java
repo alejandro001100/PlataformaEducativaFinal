@@ -7,6 +7,8 @@ import java.util.List;
 
 @Document(collection = "cuestionarios")
 public class Cuestionario {
+
+    //Atributos
     @Id
     private String id;
     private String titulo;

@@ -7,9 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+//usuario tipo estudiante, hereda de User
 
 @Document(collection = "estudiantes")
 public class Estudiante extends User {
+
+    //Atributos
     @Id
     private String id;
 
@@ -19,6 +22,7 @@ public class Estudiante extends User {
     private List<NotaCuestionario> notasCuestionarios;
     private List<Cuestionario> cuestionariosRendidos;
 
+    //Constructores
     public Estudiante(String nombre, String apellido, String correo, String contraseña, String rol, String id) {
         super(nombre, apellido, correo, contraseña, rol);
         this.id = id;
@@ -33,6 +37,8 @@ public class Estudiante extends User {
         this.notasCuestionarios = new ArrayList<>();
     }
 
+
+    //Getters y Setters
     public String getId() {
         return id;
     }
@@ -49,13 +55,6 @@ public class Estudiante extends User {
         this.cursosTomados = cursosTomados;
     }
 
-    public void agregarCursoTomado(Cursos curso) {
-        this.cursosTomados.add(curso);
-    }
-
-    public void eliminarCursoTomado(Cursos curso) {
-        this.cursosTomados.remove(curso);
-    }
 
     public List<NotaCuestionario> getNotasCuestionarios() {
         return notasCuestionarios;
@@ -65,16 +64,13 @@ public class Estudiante extends User {
         this.notasCuestionarios = notasCuestionarios;
     }
 
+    //Metodos
+
     public void agregarNotaCuestionario(NotaCuestionario nota) {
         this.notasCuestionarios.add(nota);
     }
 
-   /* public NotaCuestionario getNotaCuestionario(String cuestionarioId) {
-        return notasCuestionarios.stream()
-                .filter(nota -> nota.getTituloCuestionario().equals(cuestionarioId))
-                .findFirst()
-                .orElse(null);
-    }*/
+
    public NotaCuestionario getNotaCuestionario(String cuestionarioId) {
        return notasCuestionarios.stream()
                .filter(nota -> {
@@ -85,7 +81,20 @@ public class Estudiante extends User {
                .orElse(null);
    }
 
-   public Boolean isCursoTomado(String cursoT) {
+
+    public Cuestionario verCuestionario(String cuestionarioId) {
+        for (Cuestionario cuestionario : cuestionariosRendidos) {
+            if (cuestionario.getId().equals(cuestionarioId)) {
+                return cuestionario;
+            }
+        }
+        return null;
+    }
+
+
+
+
+    public Boolean isCursoTomado(String cursoT) {
        for (Cursos c : cursosTomados) {
            if (c.getTitulo().equals(cursoT)) {
                return true;
@@ -93,6 +102,12 @@ public class Estudiante extends User {
        }
        return false;
    }
+    public void agregarCursoTomado(Cursos curso) {
+        this.cursosTomados.add(curso);
+    }
 
+    public void eliminarCursoTomado(Cursos curso) {
+        this.cursosTomados.remove(curso);
+    }
 
 }

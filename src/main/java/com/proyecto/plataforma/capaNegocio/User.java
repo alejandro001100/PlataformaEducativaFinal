@@ -3,18 +3,19 @@ package com.proyecto.plataforma.capaNegocio;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
+// Clase principal, de este heredan profesor, estudiante y administrador.
 public class User {
 
+    //Atributos
     private String nombre;
     private String apellido;
     private String correo;
     private String contraseña;
     private String rol;
 
-    // Getters y Setters
 
 
+//Constructores
     public User(String nombre, String apellido, String correo, String contraseña, String rol) {
         this.nombre = nombre;
         this.apellido = apellido;
@@ -27,6 +28,7 @@ public class User {
 
     }
 
+    //Getters y Setters
     public String getNombre ( ) {
         return nombre;
     }
